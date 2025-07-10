@@ -2,42 +2,12 @@
 import { MainNavigation } from "@/components/MainNavigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle, Phone, Mail, MapPin, Clock, Users } from "lucide-react";
+import { MessageCircle, MapPin, Clock, Users } from "lucide-react";
 
 const Contacts = () => {
   const handleWhatsAppContact = () => {
     window.open("https://wa.me/254750308048", "_blank");
   };
-
-  const contactInfo = [
-    {
-      icon: MessageCircle,
-      title: "WhatsApp Support",
-      description: "Get instant support via WhatsApp",
-      value: "+254 750 308 048",
-      action: handleWhatsAppContact,
-      buttonText: "Chat on WhatsApp",
-      color: "text-green-600"
-    },
-    {
-      icon: Phone,
-      title: "Customer Care",
-      description: "Call us for immediate assistance",
-      value: "+254 786 281 379",
-      action: () => window.open("tel:+254786281379"),
-      buttonText: "Call Now",
-      color: "text-blue-600"
-    },
-    {
-      icon: Mail,
-      title: "Email Support",
-      description: "Send us your queries via email",
-      value: "support@airtel-invest.com",
-      action: () => window.open("mailto:support@airtel-invest.com"),
-      buttonText: "Send Email",
-      color: "text-purple-600"
-    }
-  ];
 
   const operatingHours = [
     { day: "Monday - Friday", hours: "8:00 AM - 6:00 PM" },
@@ -69,7 +39,7 @@ const Contacts = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
       <MainNavigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -78,30 +48,29 @@ const Contacts = () => {
           <p className="text-gray-600">We're here to help you with your investment journey</p>
         </div>
 
-        {/* Contact Methods */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {contactInfo.map((contact, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <contact.icon className={`h-6 w-6 ${contact.color}`} />
-                  <CardTitle className="text-lg">{contact.title}</CardTitle>
-                </div>
-                <CardDescription>{contact.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4">
-                  <p className="font-semibold text-gray-900">{contact.value}</p>
-                </div>
-                <Button
-                  onClick={contact.action}
-                  className="w-full bg-red-600 hover:bg-red-700"
-                >
-                  {contact.buttonText}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+        {/* WhatsApp Contact Method */}
+        <div className="mb-8">
+          <Card className="max-w-md mx-auto">
+            <CardHeader>
+              <div className="flex items-center space-x-3">
+                <MessageCircle className="h-6 w-6 text-green-600" />
+                <CardTitle className="text-lg">WhatsApp Support</CardTitle>
+              </div>
+              <CardDescription>Get instant support via WhatsApp</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-4">
+                <p className="font-semibold text-gray-900">+254 750 308 048</p>
+              </div>
+              <Button
+                onClick={handleWhatsAppContact}
+                className="w-full bg-green-600 hover:bg-green-700"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Chat on WhatsApp
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

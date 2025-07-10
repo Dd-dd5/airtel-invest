@@ -103,13 +103,87 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
       <MainNavigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
           <p className="text-gray-600">Welcome back, {user?.name}!</p>
+        </div>
+
+        {/* Hero Section with Encouraging Message */}
+        <div className="mb-8">
+          <Card className="bg-gradient-to-r from-red-600 to-red-800 text-white border-0">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h2 className="text-3xl font-bold mb-4">Start Your Investment Journey Today!</h2>
+                  <p className="text-xl mb-6 text-red-100">
+                    Join thousands of successful investors who are building their financial future with Airtel Invest. 
+                    Your dreams are just one investment away!
+                  </p>
+                  <div className="flex items-center space-x-4 text-red-100">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">10,000+</div>
+                      <div className="text-sm">Happy Investors</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">KSh 50M+</div>
+                      <div className="text-sm">Paid Out</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">24/7</div>
+                      <div className="text-sm">Support</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="hidden lg:block">
+                  <img 
+                    src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&h=300&fit=crop" 
+                    alt="Woman using laptop for investing" 
+                    className="rounded-lg shadow-lg"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Success Stories Section */}
+        <div className="mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <img 
+                    src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=100&h=100&fit=crop&crop=face" 
+                    alt="Success story" 
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">"I started with KSh 5,000 and now earn KSh 50,000 monthly!"</p>
+                    <p className="text-sm text-gray-500">- Sarah M., Nairobi</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-4">
+                  <img 
+                    src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop&crop=face" 
+                    alt="Success story" 
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="font-medium text-gray-900">"The referral program helped me earn extra KSh 20,000!"</p>
+                    <p className="text-sm text-gray-500">- John K., Mombasa</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Stats Grid */}
