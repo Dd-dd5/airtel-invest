@@ -9,149 +9,157 @@ const Products = () => {
   const products = [
     {
       id: 1,
-      name: "Starter Package",
+      name: "Solar Starter",
       investment: 1000,
       dailyReturn: 100,
       duration: 30,
       totalReturn: 3000,
       icon: Target,
       popular: false,
-      description: "Perfect for beginners",
-      image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=200&fit=crop"
+      description: "Perfect for solar beginners",
+      image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400&h=200&fit=crop"
     },
     {
       id: 2,
-      name: "Basic Package",
+      name: "Solar Basic",
       investment: 2000,
       dailyReturn: 200,
       duration: 30,
       totalReturn: 6000,
       icon: Star,
       popular: true,
-      description: "Most popular choice",
-      image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=200&fit=crop"
+      description: "Most popular solar package",
+      image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=200&fit=crop"
     },
     {
       id: 3,
-      name: "Standard Package",
+      name: "Solar Standard",
       investment: 5000,
       dailyReturn: 500,
       duration: 30,
       totalReturn: 15000,
       icon: Zap,
       popular: false,
-      description: "Steady growth option",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=200&fit=crop"
+      description: "Steady solar growth",
+      image: "https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=400&h=200&fit=crop"
     },
     {
       id: 4,
-      name: "Premium Package",
+      name: "Solar Premium",
       investment: 10000,
       dailyReturn: 1000,
       duration: 30,
       totalReturn: 30000,
       icon: Crown,
       popular: false,
-      description: "Higher returns",
-      image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=200&fit=crop"
+      description: "Premium solar returns",
+      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=200&fit=crop"
     },
     {
       id: 5,
-      name: "Gold Package",
+      name: "Solar Gold",
       investment: 25000,
       dailyReturn: 2500,
       duration: 30,
       totalReturn: 75000,
       icon: Trophy,
       popular: false,
-      description: "Premium investment",
-      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=200&fit=crop"
+      description: "Gold-tier solar investment",
+      image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=200&fit=crop"
     },
     {
       id: 6,
-      name: "Platinum Package",
+      name: "Solar Platinum",
       investment: 50000,
       dailyReturn: 5000,
       duration: 30,
       totalReturn: 150000,
       icon: Diamond,
       popular: false,
-      description: "High-tier returns",
-      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=200&fit=crop"
+      description: "High-tier solar farm",
+      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop"
     },
     {
       id: 7,
-      name: "Diamond Package",
+      name: "Solar Diamond",
       investment: 100000,
       dailyReturn: 10000,
       duration: 30,
       totalReturn: 300000,
       icon: Sparkles,
       popular: false,
-      description: "Exclusive package",
-      image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=200&fit=crop"
+      description: "Exclusive solar project",
+      image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=400&h=200&fit=crop"
     },
     {
       id: 8,
-      name: "Elite Package",
+      name: "Solar Elite",
       investment: 200000,
       dailyReturn: 20000,
       duration: 30,
       totalReturn: 600000,
       icon: Rocket,
       popular: false,
-      description: "Elite investor choice",
-      image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=200&fit=crop"
+      description: "Elite solar portfolio",
+      image: "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=400&h=200&fit=crop"
     },
     {
       id: 9,
-      name: "VIP Package",
+      name: "Solar VIP",
       investment: 300000,
       dailyReturn: 30000,
       duration: 30,
       totalReturn: 900000,
       icon: Gift,
       popular: false,
-      description: "VIP treatment",
-      image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&h=200&fit=crop"
+      description: "VIP solar treatment",
+      image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=200&fit=crop"
     },
     {
       id: 10,
-      name: "Ultimate Package",
+      name: "Solar Ultimate",
       investment: 500000,
       dailyReturn: 50000,
       duration: 1,
       totalReturn: 50000,
       icon: Flame,
       popular: false,
-      description: "Maximum daily returns",
-      image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=200&fit=crop"
+      description: "Maximum solar returns",
+      image: "https://images.unsplash.com/photo-1548337138-e87d889cc369?w=400&h=200&fit=crop"
     }
   ];
 
   const handleInvest = (product: typeof products[0]) => {
     toast({
-      title: "Investment Initiated",
-      description: `You have selected ${product.name} for KSh ${product.investment.toLocaleString()}. Please proceed to deposit funds.`,
+      title: "Solar Investment Initiated! ☀️",
+      description: `You have selected ${product.name} for KSh ${product.investment.toLocaleString()}. Please proceed to deposit funds to start earning from solar energy!`,
     });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-yellow-100 pb-20 md:pb-0">
       <MainNavigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Investment Packages</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">Choose the perfect investment package to grow your wealth. All packages offer guaranteed daily returns with flexible investment options.</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">☀️ Solar Investment Packages</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Harness the power of the sun and grow your wealth! Choose from our range of solar energy investment packages 
+            with guaranteed daily returns. Join the renewable energy revolution while securing your financial future.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <Badge className="bg-green-500 text-white px-4 py-2">🌱 100% Renewable Energy</Badge>
+            <Badge className="bg-yellow-500 text-white px-4 py-2">⚡ Guaranteed Daily Returns</Badge>
+            <Badge className="bg-blue-500 text-white px-4 py-2">🔒 Secure Solar Projects</Badge>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
-            <Card key={product.id} className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 ${product.popular ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}>
+            <Card key={product.id} className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 bg-white ${product.popular ? 'ring-2 ring-yellow-500 shadow-lg' : ''}`}>
               {product.popular && (
-                <Badge className="absolute top-4 left-4 z-10 bg-blue-500 hover:bg-blue-600">
-                  Most Popular
+                <Badge className="absolute top-4 left-4 z-10 bg-yellow-500 hover:bg-yellow-600">
+                  ⭐ Most Popular
                 </Badge>
               )}
               
@@ -162,34 +170,40 @@ const Products = () => {
                   alt={product.name}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-4 left-4 text-white">
                   <product.icon className="h-8 w-8 mb-2" />
+                  <div className="text-sm font-medium">Solar Powered</div>
+                </div>
+                <div className="absolute top-4 right-4">
+                  <div className="bg-yellow-400 text-black px-2 py-1 rounded-full text-xs font-bold">
+                    ☀️ ECO
+                  </div>
                 </div>
               </div>
 
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <CardTitle className="text-xl font-bold">{product.name}</CardTitle>
+                  <CardTitle className="text-xl font-bold text-gray-900">{product.name}</CardTitle>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-2xl font-bold text-yellow-600">
                       KSh {product.investment.toLocaleString()}
                     </div>
                   </div>
                 </div>
-                <CardDescription className="text-base">{product.description}</CardDescription>
+                <CardDescription className="text-base text-gray-600">{product.description}</CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-green-50 p-3 rounded-lg text-center">
-                    <p className="text-sm text-gray-600">Daily Return</p>
+                  <div className="bg-green-50 p-3 rounded-lg text-center border border-green-200">
+                    <p className="text-sm text-gray-600">Daily Solar Return</p>
                     <p className="font-bold text-green-600 text-lg">
                       KSh {product.dailyReturn.toLocaleString()}
                     </p>
                   </div>
                   
-                  <div className="bg-blue-50 p-3 rounded-lg text-center">
+                  <div className="bg-blue-50 p-3 rounded-lg text-center border border-blue-200">
                     <p className="text-sm text-gray-600">Duration</p>
                     <p className="font-bold text-blue-600 text-lg">
                       {product.duration} {product.duration === 1 ? 'day' : 'days'}
@@ -197,50 +211,79 @@ const Products = () => {
                   </div>
                 </div>
                 
-                <div className="bg-purple-50 p-4 rounded-lg">
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border border-yellow-200">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-gray-600">Total Return:</span>
-                    <span className="font-bold text-purple-600 text-xl">
+                    <span className="text-gray-600">Total Solar Return:</span>
+                    <span className="font-bold text-yellow-600 text-xl">
                       KSh {product.totalReturn.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Net Profit:</span>
+                    <span className="text-gray-600">Net Solar Profit:</span>
                     <span className="font-bold text-green-600 text-lg">
                       KSh {(product.totalReturn - product.investment).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="mt-2 text-center">
+                    <span className="text-xs text-gray-500">
+                      🌱 Contributing to {Math.floor(product.investment / 1000)} tons CO₂ reduction
                     </span>
                   </div>
                 </div>
 
                 <Button
                   onClick={() => handleInvest(product)}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
                 >
-                  Invest Now
+                  ☀️ Invest in Solar Now
                 </Button>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Call to Action */}
-        <div className="mt-16 text-center">
-          <Card className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground">
+        {/* Solar Benefits Section */}
+        <div className="mt-16">
+          <Card className="bg-gradient-to-r from-green-400 via-yellow-400 to-orange-400 text-white">
             <CardContent className="py-12">
-              <h2 className="text-3xl font-bold mb-4">Ready to Start Investing?</h2>
-              <p className="text-xl mb-6">Join thousands of investors who trust Solar Invest for guaranteed returns</p>
-              <div className="flex flex-wrap justify-center gap-8 text-center">
+              <h2 className="text-3xl font-bold mb-6 text-center">🌟 Why Choose Solar Investment?</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div>
-                  <div className="text-3xl font-bold">500+</div>
-                  <div className="text-primary-foreground/80">Active Investors</div>
+                  <div className="text-4xl mb-4">🌍</div>
+                  <h3 className="text-xl font-bold mb-2">Environmental Impact</h3>
+                  <p>Help reduce carbon emissions and contribute to a cleaner planet while earning profits</p>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold">KSh 50M+</div>
-                  <div className="text-primary-foreground/80">Total Investments</div>
+                  <div className="text-4xl mb-4">💰</div>
+                  <h3 className="text-xl font-bold mb-2">Guaranteed Returns</h3>
+                  <p>Solar energy provides consistent, predictable returns backed by renewable energy projects</p>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold">24/7</div>
-                  <div className="text-primary-foreground/80">Customer Support</div>
+                  <div className="text-4xl mb-4">🚀</div>
+                  <h3 className="text-xl font-bold mb-2">Future-Proof Investment</h3>
+                  <p>Solar energy is the future - invest in technology that will only grow in value</p>
+                </div>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <h3 className="text-2xl font-bold mb-4">Ready to Power Your Future with Solar?</h3>
+                <div className="flex flex-wrap justify-center gap-8 mb-6">
+                  <div>
+                    <div className="text-3xl font-bold">500+</div>
+                    <div className="text-white/80">Solar Investors</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold">KSh 50M+</div>
+                    <div className="text-white/80">Solar Investments</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold">1000+</div>
+                    <div className="text-white/80">Solar Panels Funded</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold">24/7</div>
+                    <div className="text-white/80">Solar Support</div>
+                  </div>
                 </div>
               </div>
             </CardContent>

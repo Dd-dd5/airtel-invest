@@ -1,19 +1,22 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface User {
   phone: string;
   name: string;
   balance: number;
+  referralCode: string;
+  referralEarnings: number;
+  totalReferrals: number;
 }
 
 interface AuthContextType {
   user: User | null;
   login: (phone: string, password: string) => Promise<boolean>;
-  signup: (phone: string, password: string, name: string) => Promise<boolean>;
+  signup: (phone: string, password: string, name: string, referralCode?: string) => Promise<boolean>;
   logout: () => void;
   resetPassword: (phone: string) => Promise<boolean>;
   updateBalance: (amount: number) => void;
+  addReferralEarning: (amount: number) => void;
   isAuthenticated: boolean;
 }
 
@@ -27,76 +30,184 @@ export const useAuth = () => {
   return context;
 };
 
-// Mock user database
-const mockUsers = [
-  { phone: '+254700000000', password: 'password123', name: 'John Doe', balance: 45750 },
-  { phone: '+254712345678', password: 'demo123', name: 'Jane Smith', balance: 25300 },
-  { phone: '+254733445566', password: 'test123', name: 'Bob Wilson', balance: 67890 },
-];
+// Generate referral code
+const generateReferralCode = (name: string, phone: string) => {
+  const nameCode = name.substring(0, 3).toUpperCase();
+  const phoneCode = phone.slice(-4);
+  return `${nameCode}${phoneCode}`;
+};
+
+// Mock user database - now stored in localStorage for persistence
+const getUsers = () => {
+  const stored = localStorage.getItem('solar_users_db');
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  
+  // Default users
+  const defaultUsers = [
+    { 
+      phone: '+254700000000', 
+      password: 'password123', 
+      name: 'John Doe', 
+      balance: 45750,
+      referralCode: 'JOH0000',
+      referralEarnings: 1200,
+      totalReferrals: 3
+    },
+    { 
+      phone: '+254712345678', 
+      password: 'demo123', 
+      name: 'Jane Smith', 
+      balance: 25300,
+      referralCode: 'JAN5678',
+      referralEarnings: 800,
+      totalReferrals: 2
+    },
+    { 
+      phone: '+254733445566', 
+      password: 'test123', 
+      name: 'Bob Wilson', 
+      balance: 67890,
+      referralCode: 'BOB5566',
+      referralEarnings: 2000,
+      totalReferrals: 5
+    },
+  ];
+  
+  localStorage.setItem('solar_users_db', JSON.stringify(defaultUsers));
+  return defaultUsers;
+};
+
+const saveUsers = (users: any[]) => {
+  localStorage.setItem('solar_users_db', JSON.stringify(users));
+};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     // Check if user is logged in from localStorage
-    const savedUser = localStorage.getItem('airtel_user');
+    const savedUser = localStorage.getItem('solar_current_user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
   }, []);
 
   const login = async (phone: string, password: string): Promise<boolean> => {
-    const foundUser = mockUsers.find(u => u.phone === phone && u.password === password);
+    const users = getUsers();
+    const foundUser = users.find((u: any) => u.phone === phone && u.password === password);
     if (foundUser) {
       const userData = { 
         phone: foundUser.phone, 
         name: foundUser.name, 
-        balance: foundUser.balance 
+        balance: foundUser.balance,
+        referralCode: foundUser.referralCode,
+        referralEarnings: foundUser.referralEarnings || 0,
+        totalReferrals: foundUser.totalReferrals || 0
       };
       setUser(userData);
-      localStorage.setItem('airtel_user', JSON.stringify(userData));
+      localStorage.setItem('solar_current_user', JSON.stringify(userData));
       return true;
     }
     return false;
   };
 
-  const signup = async (phone: string, password: string, name: string): Promise<boolean> => {
+  const signup = async (phone: string, password: string, name: string, referralCode?: string): Promise<boolean> => {
+    const users = getUsers();
+    
     // Check if user already exists
-    const existingUser = mockUsers.find(u => u.phone === phone);
+    const existingUser = users.find((u: any) => u.phone === phone);
     if (existingUser) {
       return false; // User already exists
     }
     
-    // Create new user
-    const newUser = { phone, password, name, balance: 0 };
-    mockUsers.push(newUser);
+    // Generate referral code for new user
+    const newReferralCode = generateReferralCode(name, phone);
     
-    const userData = { phone, name, balance: 0 };
+    // Create new user
+    const newUser = { 
+      phone, 
+      password, 
+      name, 
+      balance: 0,
+      referralCode: newReferralCode,
+      referralEarnings: 0,
+      totalReferrals: 0
+    };
+    
+    // If referred by someone, add referral bonus to referrer
+    if (referralCode) {
+      const referrer = users.find((u: any) => u.referralCode === referralCode);
+      if (referrer) {
+        referrer.referralEarnings = (referrer.referralEarnings || 0) + 400;
+        referrer.totalReferrals = (referrer.totalReferrals || 0) + 1;
+        referrer.balance += 400;
+      }
+    }
+    
+    users.push(newUser);
+    saveUsers(users);
+    
+    const userData = { 
+      phone, 
+      name, 
+      balance: 0,
+      referralCode: newReferralCode,
+      referralEarnings: 0,
+      totalReferrals: 0
+    };
     setUser(userData);
-    localStorage.setItem('airtel_user', JSON.stringify(userData));
+    localStorage.setItem('solar_current_user', JSON.stringify(userData));
     return true;
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('airtel_user');
+    localStorage.removeItem('solar_current_user');
   };
 
   const resetPassword = async (phone: string): Promise<boolean> => {
-    const foundUser = mockUsers.find(u => u.phone === phone);
+    const users = getUsers();
+    const foundUser = users.find((u: any) => u.phone === phone);
     return !!foundUser;
   };
 
   const updateBalance = (amount: number) => {
     if (user) {
-      const updatedUser = { ...user, balance: user.balance + amount };
-      setUser(updatedUser);
-      localStorage.setItem('airtel_user', JSON.stringify(updatedUser));
+      const users = getUsers();
+      const userIndex = users.findIndex((u: any) => u.phone === user.phone);
       
-      // Update mock database
-      const userIndex = mockUsers.findIndex(u => u.phone === user.phone);
       if (userIndex !== -1) {
-        mockUsers[userIndex].balance = updatedUser.balance;
+        users[userIndex].balance += amount;
+        saveUsers(users);
+        
+        const updatedUser = { ...user, balance: user.balance + amount };
+        setUser(updatedUser);
+        localStorage.setItem('solar_current_user', JSON.stringify(updatedUser));
+      }
+    }
+  };
+
+  const addReferralEarning = (amount: number) => {
+    if (user) {
+      const users = getUsers();
+      const userIndex = users.findIndex((u: any) => u.phone === user.phone);
+      
+      if (userIndex !== -1) {
+        users[userIndex].referralEarnings += amount;
+        users[userIndex].totalReferrals += 1;
+        users[userIndex].balance += amount;
+        saveUsers(users);
+        
+        const updatedUser = { 
+          ...user, 
+          referralEarnings: user.referralEarnings + amount,
+          totalReferrals: user.totalReferrals + 1,
+          balance: user.balance + amount
+        };
+        setUser(updatedUser);
+        localStorage.setItem('solar_current_user', JSON.stringify(updatedUser));
       }
     }
   };
@@ -108,6 +219,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     logout,
     resetPassword,
     updateBalance,
+    addReferralEarning,
     isAuthenticated: !!user,
   };
 
