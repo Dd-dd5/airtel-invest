@@ -115,13 +115,13 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mb-4">
-            <span className="text-white font-bold text-xl">A</span>
+          <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4">
+            <span className="text-primary-foreground font-bold text-xl">S</span>
           </div>
-          <CardTitle className="text-2xl font-bold text-red-600">Airtel Invest</CardTitle>
+          <CardTitle className="text-2xl font-bold text-primary">Solar Invest</CardTitle>
           <CardDescription>
             {showForgotPassword ? "Reset your password" : "Access your investment account"}
           </CardDescription>
@@ -161,7 +161,7 @@ const Login = () => {
 
                   <Button
                     type="submit"
-                    className="w-full bg-red-600 hover:bg-red-700"
+                    className="w-full"
                     disabled={isLoading}
                   >
                     {isLoading ? "Signing in..." : "Sign In"}
@@ -171,7 +171,7 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setShowForgotPassword(true)}
-                      className="text-sm text-red-600 hover:underline"
+                      className="text-sm text-primary hover:underline"
                     >
                       Forgot your password?
                     </button>
@@ -219,7 +219,7 @@ const Login = () => {
 
                   <Button
                     type="submit"
-                    className="w-full bg-red-600 hover:bg-red-700"
+                    className="w-full"
                     disabled={isLoading}
                   >
                     {isLoading ? "Creating Account..." : "Create Account"}
@@ -243,7 +243,7 @@ const Login = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-red-600 hover:bg-red-700"
+                className="w-full"
                 disabled={isLoading}
               >
                 Send Reset Link
@@ -253,7 +253,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(false)}
-                  className="text-sm text-red-600 hover:underline"
+                  className="text-sm text-primary hover:underline"
                 >
                   Back to login
                 </button>

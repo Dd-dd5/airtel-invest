@@ -106,7 +106,7 @@ const Contacts = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <MapPin className="h-5 w-5 mr-2 text-red-600" />
+                <MapPin className="h-5 w-5 mr-2 text-primary" />
                 Office Location
               </CardTitle>
               <CardDescription>Visit us at our main office</CardDescription>
@@ -114,7 +114,7 @@ const Contacts = () => {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Airtel Investment Center</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">Solar Investment Center</h4>
                   <p className="text-gray-600">
                     Westlands Square, 2nd Floor<br />
                     Waiyaki Way, Westlands<br />

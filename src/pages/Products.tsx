@@ -1,4 +1,3 @@
-
 import { MainNavigation } from "@/components/MainNavigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -149,9 +148,9 @@ const Products = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
-            <Card key={product.id} className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 ${product.popular ? 'ring-2 ring-red-500 shadow-lg' : ''}`}>
+            <Card key={product.id} className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 ${product.popular ? 'ring-2 ring-blue-500 shadow-lg' : ''}`}>
               {product.popular && (
-                <Badge className="absolute top-4 left-4 z-10 bg-red-500 hover:bg-red-600">
+                <Badge className="absolute top-4 left-4 z-10 bg-blue-500 hover:bg-blue-600">
                   Most Popular
                 </Badge>
               )}
@@ -173,7 +172,7 @@ const Products = () => {
                 <div className="flex items-center justify-between mb-2">
                   <CardTitle className="text-xl font-bold">{product.name}</CardTitle>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-2xl font-bold text-blue-600">
                       KSh {product.investment.toLocaleString()}
                     </div>
                   </div>
@@ -215,7 +214,7 @@ const Products = () => {
 
                 <Button
                   onClick={() => handleInvest(product)}
-                  className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
                 >
                   Invest Now
                 </Button>
@@ -226,22 +225,22 @@ const Products = () => {
 
         {/* Call to Action */}
         <div className="mt-16 text-center">
-          <Card className="bg-gradient-to-r from-red-600 to-red-700 text-white">
+          <Card className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground">
             <CardContent className="py-12">
               <h2 className="text-3xl font-bold mb-4">Ready to Start Investing?</h2>
-              <p className="text-xl mb-6">Join thousands of investors who trust Airtel Invest for guaranteed returns</p>
+              <p className="text-xl mb-6">Join thousands of investors who trust Solar Invest for guaranteed returns</p>
               <div className="flex flex-wrap justify-center gap-8 text-center">
                 <div>
                   <div className="text-3xl font-bold">500+</div>
-                  <div className="text-red-100">Active Investors</div>
+                  <div className="text-primary-foreground/80">Active Investors</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold">KSh 50M+</div>
-                  <div className="text-red-100">Total Investments</div>
+                  <div className="text-primary-foreground/80">Total Investments</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold">24/7</div>
-                  <div className="text-red-100">Customer Support</div>
+                  <div className="text-primary-foreground/80">Customer Support</div>
                 </div>
               </div>
             </CardContent>

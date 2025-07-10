@@ -25,11 +25,11 @@ export const MainNavigation = () => {
 
   return (
     <>
-      <nav className="bg-red-600 text-white shadow-lg">
+      <nav className="bg-primary text-primary-foreground shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold">Airtel Invest</h1>
+              <h1 className="text-2xl font-bold">Solar Invest</h1>
             </div>
             
             {/* Desktop Navigation */}
@@ -41,8 +41,8 @@ export const MainNavigation = () => {
                     to={item.href}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive(item.href)
-                        ? "bg-red-700 text-white"
-                        : "text-red-100 hover:bg-red-500 hover:text-white"
+                        ? "bg-primary/90 text-primary-foreground"
+                        : "text-primary-foreground/80 hover:bg-primary/80 hover:text-primary-foreground"
                     }`}
                   >
                     {item.name}
@@ -57,7 +57,7 @@ export const MainNavigation = () => {
                 onClick={handleLogout}
                 variant="ghost"
                 size="sm"
-                className="text-white hover:bg-red-500"
+                className="text-primary-foreground hover:bg-primary/80"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
@@ -70,7 +70,7 @@ export const MainNavigation = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-white hover:bg-red-500"
+                className="text-primary-foreground hover:bg-primary/80"
               >
                 {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </Button>
@@ -81,26 +81,26 @@ export const MainNavigation = () => {
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-red-700">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-primary/90">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
                     isActive(item.href)
-                      ? "bg-red-800 text-white"
-                      : "text-red-100 hover:bg-red-600 hover:text-white"
+                      ? "bg-primary/80 text-primary-foreground"
+                      : "text-primary-foreground/80 hover:bg-primary/70 hover:text-primary-foreground"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
-              <div className="pt-2 border-t border-red-600">
+              <div className="pt-2 border-t border-primary/60">
                 <Button
                   onClick={handleLogout}
                   variant="ghost"
-                  className="w-full text-left text-white hover:bg-red-600"
+                  className="w-full text-left text-primary-foreground hover:bg-primary/70"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
@@ -120,8 +120,8 @@ export const MainNavigation = () => {
               to={item.href}
               className={`flex flex-col items-center py-2 px-1 ${
                 isActive(item.href)
-                  ? "text-red-600"
-                  : "text-gray-500 hover:text-red-600"
+                  ? "text-primary"
+                  : "text-gray-500 hover:text-primary"
               }`}
             >
               <item.icon className="h-5 w-5 mb-1" />
