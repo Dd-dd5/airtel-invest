@@ -1,0 +1,217 @@
+
+import { MainNavigation } from "@/components/MainNavigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { MessageCircle, Phone, Mail, MapPin, Clock, Users } from "lucide-react";
+
+const Contacts = () => {
+  const handleWhatsAppContact = () => {
+    window.open("https://wa.me/254750308048", "_blank");
+  };
+
+  const contactInfo = [
+    {
+      icon: MessageCircle,
+      title: "WhatsApp Support",
+      description: "Get instant support via WhatsApp",
+      value: "+254 750 308 048",
+      action: handleWhatsAppContact,
+      buttonText: "Chat on WhatsApp",
+      color: "text-green-600"
+    },
+    {
+      icon: Phone,
+      title: "Customer Care",
+      description: "Call us for immediate assistance",
+      value: "+254 786 281 379",
+      action: () => window.open("tel:+254786281379"),
+      buttonText: "Call Now",
+      color: "text-blue-600"
+    },
+    {
+      icon: Mail,
+      title: "Email Support",
+      description: "Send us your queries via email",
+      value: "support@airtel-invest.com",
+      action: () => window.open("mailto:support@airtel-invest.com"),
+      buttonText: "Send Email",
+      color: "text-purple-600"
+    }
+  ];
+
+  const operatingHours = [
+    { day: "Monday - Friday", hours: "8:00 AM - 6:00 PM" },
+    { day: "Saturday", hours: "9:00 AM - 4:00 PM" },
+    { day: "Sunday", hours: "10:00 AM - 2:00 PM" }
+  ];
+
+  const faqItems = [
+    {
+      question: "How do I start investing?",
+      answer: "Simply choose a package from our Products page and follow the investment process. Minimum investment starts at KSh 1,000."
+    },
+    {
+      question: "When will I receive my returns?",
+      answer: "Daily returns are credited to your account every 24 hours. You can withdraw your earnings anytime after the minimum threshold."
+    },
+    {
+      question: "What is the minimum withdrawal amount?",
+      answer: "The minimum withdrawal amount is KSh 800. Withdrawals are processed within 1-2 business hours."
+    },
+    {
+      question: "How does the referral program work?",
+      answer: "Share your referral link with friends. When they sign up and purchase any package, you earn KSh 400 instantly."
+    },
+    {
+      question: "Is my investment secure?",
+      answer: "Yes, all investments are secured and managed by experienced professionals. We use bank-grade security measures."
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <MainNavigation />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Us</h1>
+          <p className="text-gray-600">We're here to help you with your investment journey</p>
+        </div>
+
+        {/* Contact Methods */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {contactInfo.map((contact, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <contact.icon className={`h-6 w-6 ${contact.color}`} />
+                  <CardTitle className="text-lg">{contact.title}</CardTitle>
+                </div>
+                <CardDescription>{contact.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-4">
+                  <p className="font-semibold text-gray-900">{contact.value}</p>
+                </div>
+                <Button
+                  onClick={contact.action}
+                  className="w-full bg-red-600 hover:bg-red-700"
+                >
+                  {contact.buttonText}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Operating Hours */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Clock className="h-5 w-5 mr-2 text-blue-600" />
+                Operating Hours
+              </CardTitle>
+              <CardDescription>Our customer support is available during these hours</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {operatingHours.map((schedule, index) => (
+                  <div key={index} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
+                    <span className="font-medium text-gray-700">{schedule.day}</span>
+                    <span className="text-gray-600">{schedule.hours}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6 p-4 bg-green-50 rounded-lg">
+                <p className="text-sm text-green-800 font-medium">24/7 WhatsApp Support</p>
+                <p className="text-sm text-green-700 mt-1">
+                  For urgent matters, you can reach us on WhatsApp anytime!
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Office Location */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <MapPin className="h-5 w-5 mr-2 text-red-600" />
+                Office Location
+              </CardTitle>
+              <CardDescription>Visit us at our main office</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Airtel Investment Center</h4>
+                  <p className="text-gray-600">
+                    Westlands Square, 2nd Floor<br />
+                    Waiyaki Way, Westlands<br />
+                    Nairobi, Kenya
+                  </p>
+                </div>
+                
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-800 font-medium">Office Hours:</p>
+                  <p className="text-sm text-blue-700 mt-1">
+                    Monday - Friday: 8:00 AM - 5:00 PM<br />
+                    Saturday: 9:00 AM - 1:00 PM
+                  </p>
+                </div>
+
+                <Button
+                  onClick={() => window.open("https://maps.google.com", "_blank")}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <MapPin className="h-4 w-4 mr-2" />
+                  Get Directions
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* FAQ Section */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Users className="h-5 w-5 mr-2 text-purple-600" />
+              Frequently Asked Questions
+            </CardTitle>
+            <CardDescription>Quick answers to common questions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {faqItems.map((faq, index) => (
+                <div key={index} className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
+                  <h4 className="font-semibold text-gray-900 mb-2">{faq.question}</h4>
+                  <p className="text-gray-600 text-sm">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
+              <p className="text-sm text-yellow-800 font-medium">Still have questions?</p>
+              <p className="text-sm text-yellow-700 mt-1">
+                Contact our support team via WhatsApp for personalized assistance!
+              </p>
+              <Button
+                onClick={handleWhatsAppContact}
+                className="mt-3 bg-green-600 hover:bg-green-700"
+                size="sm"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Chat with Support
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default Contacts;
