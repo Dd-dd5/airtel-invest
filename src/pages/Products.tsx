@@ -17,7 +17,8 @@ const Products = () => {
       totalReturn: 3000,
       icon: Target,
       popular: false,
-      description: "Perfect for beginners"
+      description: "Perfect for beginners",
+      image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=200&fit=crop"
     },
     {
       id: 2,
@@ -28,7 +29,8 @@ const Products = () => {
       totalReturn: 6000,
       icon: Star,
       popular: true,
-      description: "Most popular choice"
+      description: "Most popular choice",
+      image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=200&fit=crop"
     },
     {
       id: 3,
@@ -39,7 +41,8 @@ const Products = () => {
       totalReturn: 15000,
       icon: Zap,
       popular: false,
-      description: "Steady growth option"
+      description: "Steady growth option",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=200&fit=crop"
     },
     {
       id: 4,
@@ -50,7 +53,8 @@ const Products = () => {
       totalReturn: 30000,
       icon: Crown,
       popular: false,
-      description: "Higher returns"
+      description: "Higher returns",
+      image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=200&fit=crop"
     },
     {
       id: 5,
@@ -61,7 +65,8 @@ const Products = () => {
       totalReturn: 75000,
       icon: Trophy,
       popular: false,
-      description: "Premium investment"
+      description: "Premium investment",
+      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=200&fit=crop"
     },
     {
       id: 6,
@@ -72,7 +77,8 @@ const Products = () => {
       totalReturn: 150000,
       icon: Diamond,
       popular: false,
-      description: "High-tier returns"
+      description: "High-tier returns",
+      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=200&fit=crop"
     },
     {
       id: 7,
@@ -83,7 +89,8 @@ const Products = () => {
       totalReturn: 300000,
       icon: Sparkles,
       popular: false,
-      description: "Exclusive package"
+      description: "Exclusive package",
+      image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=200&fit=crop"
     },
     {
       id: 8,
@@ -94,7 +101,8 @@ const Products = () => {
       totalReturn: 600000,
       icon: Rocket,
       popular: false,
-      description: "Elite investor choice"
+      description: "Elite investor choice",
+      image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=200&fit=crop"
     },
     {
       id: 9,
@@ -105,7 +113,8 @@ const Products = () => {
       totalReturn: 900000,
       icon: Gift,
       popular: false,
-      description: "VIP treatment"
+      description: "VIP treatment",
+      image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=400&h=200&fit=crop"
     },
     {
       id: 10,
@@ -116,14 +125,15 @@ const Products = () => {
       totalReturn: 50000,
       icon: Flame,
       popular: false,
-      description: "Maximum daily returns"
+      description: "Maximum daily returns",
+      image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=200&fit=crop"
     }
   ];
 
   const handleInvest = (product: typeof products[0]) => {
     toast({
       title: "Investment Initiated",
-      description: `You have selected ${product.name} for KSh ${product.investment.toLocaleString()}`,
+      description: `You have selected ${product.name} for KSh ${product.investment.toLocaleString()}. Please proceed to deposit funds.`,
     });
   };
 
@@ -132,76 +142,110 @@ const Products = () => {
       <MainNavigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Investment Products</h1>
-          <p className="text-gray-600">Choose the perfect investment package for your goals</p>
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Investment Packages</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">Choose the perfect investment package to grow your wealth. All packages offer guaranteed daily returns with flexible investment options.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
-            <Card key={product.id} className={`relative ${product.popular ? 'ring-2 ring-red-500' : ''}`}>
+            <Card key={product.id} className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 ${product.popular ? 'ring-2 ring-red-500 shadow-lg' : ''}`}>
               {product.popular && (
-                <Badge className="absolute -top-2 left-4 bg-red-500 hover:bg-red-600">
+                <Badge className="absolute top-4 left-4 z-10 bg-red-500 hover:bg-red-600">
                   Most Popular
                 </Badge>
               )}
               
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <product.icon className="h-8 w-8 text-red-600" />
+              {/* Product Image */}
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute bottom-4 left-4 text-white">
+                  <product.icon className="h-8 w-8 mb-2" />
+                </div>
+              </div>
+
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <CardTitle className="text-xl font-bold">{product.name}</CardTitle>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-gray-900">
+                    <div className="text-2xl font-bold text-red-600">
                       KSh {product.investment.toLocaleString()}
                     </div>
-                    <div className="text-sm text-gray-500">Investment Amount</div>
                   </div>
                 </div>
-                <CardTitle className="text-xl">{product.name}</CardTitle>
-                <CardDescription>{product.description}</CardDescription>
+                <CardDescription className="text-base">{product.description}</CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Daily Return:</span>
-                    <span className="font-semibold text-green-600">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-green-50 p-3 rounded-lg text-center">
+                    <p className="text-sm text-gray-600">Daily Return</p>
+                    <p className="font-bold text-green-600 text-lg">
                       KSh {product.dailyReturn.toLocaleString()}
-                    </span>
+                    </p>
                   </div>
                   
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Duration:</span>
-                    <span className="font-semibold">
+                  <div className="bg-blue-50 p-3 rounded-lg text-center">
+                    <p className="text-sm text-gray-600">Duration</p>
+                    <p className="font-bold text-blue-600 text-lg">
                       {product.duration} {product.duration === 1 ? 'day' : 'days'}
-                    </span>
+                    </p>
                   </div>
-                  
-                  <div className="flex justify-between">
+                </div>
+                
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-600">Total Return:</span>
-                    <span className="font-semibold text-green-600">
+                    <span className="font-bold text-purple-600 text-xl">
                       KSh {product.totalReturn.toLocaleString()}
                     </span>
                   </div>
-                  
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Profit:</span>
-                    <span className="font-semibold text-blue-600">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Net Profit:</span>
+                    <span className="font-bold text-green-600 text-lg">
                       KSh {(product.totalReturn - product.investment).toLocaleString()}
                     </span>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t">
-                  <Button
-                    onClick={() => handleInvest(product)}
-                    className="w-full bg-red-600 hover:bg-red-700"
-                  >
-                    Invest Now
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => handleInvest(product)}
+                  className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                >
+                  Invest Now
+                </Button>
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* Call to Action */}
+        <div className="mt-16 text-center">
+          <Card className="bg-gradient-to-r from-red-600 to-red-700 text-white">
+            <CardContent className="py-12">
+              <h2 className="text-3xl font-bold mb-4">Ready to Start Investing?</h2>
+              <p className="text-xl mb-6">Join thousands of investors who trust Airtel Invest for guaranteed returns</p>
+              <div className="flex flex-wrap justify-center gap-8 text-center">
+                <div>
+                  <div className="text-3xl font-bold">500+</div>
+                  <div className="text-red-100">Active Investors</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold">KSh 50M+</div>
+                  <div className="text-red-100">Total Investments</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold">24/7</div>
+                  <div className="text-red-100">Customer Support</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
