@@ -37,46 +37,17 @@ const generateReferralCode = (name: string, phone: string) => {
   return `${nameCode}${phoneCode}`;
 };
 
-// Mock user database - now stored in localStorage for persistence
+// Real user database stored in localStorage
 const getUsers = () => {
   const stored = localStorage.getItem('solar_users_db');
   if (stored) {
     return JSON.parse(stored);
   }
   
-  // Default users
-  const defaultUsers = [
-    { 
-      phone: '+254700000000', 
-      password: 'password123', 
-      name: 'John Doe', 
-      balance: 45750,
-      referralCode: 'JOH0000',
-      referralEarnings: 1200,
-      totalReferrals: 3
-    },
-    { 
-      phone: '+254712345678', 
-      password: 'demo123', 
-      name: 'Jane Smith', 
-      balance: 25300,
-      referralCode: 'JAN5678',
-      referralEarnings: 800,
-      totalReferrals: 2
-    },
-    { 
-      phone: '+254733445566', 
-      password: 'test123', 
-      name: 'Bob Wilson', 
-      balance: 67890,
-      referralCode: 'BOB5566',
-      referralEarnings: 2000,
-      totalReferrals: 5
-    },
-  ];
-  
-  localStorage.setItem('solar_users_db', JSON.stringify(defaultUsers));
-  return defaultUsers;
+  // Initialize empty database
+  const emptyDb: any[] = [];
+  localStorage.setItem('solar_users_db', JSON.stringify(emptyDb));
+  return emptyDb;
 };
 
 const saveUsers = (users: any[]) => {

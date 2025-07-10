@@ -97,6 +97,34 @@ All colors MUST be HSL.
   }
 }
 
+/* Mobile optimizations */
+@layer utilities {
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  .mobile-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .mobile-text {
+    font-size: 0.875rem;
+  }
+  
+  .mobile-button {
+    height: 3rem;
+    font-size: 1rem;
+  }
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -123,4 +151,17 @@ All colors MUST be HSL.
 
 .pulse-glow {
   animation: pulse-glow 2s infinite;
+}
+
+/* Touch-friendly mobile interactions */
+@media (max-width: 768px) {
+  button, .button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  input, select, textarea {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
 }

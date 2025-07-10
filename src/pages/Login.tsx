@@ -119,19 +119,19 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-orange-100 to-yellow-200 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="mx-auto w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
-            <Sun className="h-10 w-10 text-white" />
+        <div className="text-center mb-6">
+          <div className="mx-auto w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
+            <Sun className="h-8 w-8 md:h-10 md:w-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Solar Invest</h1>
-          <p className="text-gray-600">Powering your financial future with solar energy</p>
-          <div className="flex justify-center space-x-4 mt-4">
-            <div className="flex items-center text-sm text-gray-600">
-              <Leaf className="h-4 w-4 mr-1 text-green-500" />
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Solar Invest</h1>
+          <p className="text-sm md:text-base text-gray-600">Powering your financial future with solar energy</p>
+          <div className="flex justify-center space-x-4 mt-3">
+            <div className="flex items-center text-xs md:text-sm text-gray-600">
+              <Leaf className="h-3 w-3 md:h-4 md:w-4 mr-1 text-green-500" />
               Eco-Friendly
             </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <Zap className="h-4 w-4 mr-1 text-yellow-500" />
+            <div className="flex items-center text-xs md:text-sm text-gray-600">
+              <Zap className="h-3 w-3 md:h-4 md:w-4 mr-1 text-yellow-500" />
               Daily Returns
             </div>
           </div>
@@ -139,10 +139,10 @@ const Login = () => {
 
         <Card className="shadow-2xl border-0">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl font-bold text-gray-900">
+            <CardTitle className="text-xl md:text-2xl font-bold text-gray-900">
               {showForgotPassword ? "Reset Password" : "Access Your Account"}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm">
               {showForgotPassword 
                 ? "Enter your phone number to reset your password" 
                 : "Login or create your solar investment account"
@@ -153,14 +153,14 @@ const Login = () => {
             {!showForgotPassword ? (
               <Tabs defaultValue="login" className="space-y-4">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                  <TabsTrigger value="login" className="text-sm">Login</TabsTrigger>
+                  <TabsTrigger value="signup" className="text-sm">Sign Up</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div>
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone" className="text-sm">Phone Number</Label>
                       <Input
                         id="phone"
                         type="tel"
@@ -168,12 +168,12 @@ const Login = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         required
-                        className="mt-1"
+                        className="mt-1 h-12 text-base"
                       />
                     </div>
                     
                     <div>
-                      <Label htmlFor="password">Password</Label>
+                      <Label htmlFor="password" className="text-sm">Password</Label>
                       <Input
                         id="password"
                         type="password"
@@ -181,13 +181,13 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="mt-1"
+                        className="mt-1 h-12 text-base"
                       />
                     </div>
 
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                      className="w-full h-12 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-base font-semibold"
                       disabled={isLoading}
                     >
                       {isLoading ? "Signing in..." : "☀️ Sign In"}
@@ -208,7 +208,7 @@ const Login = () => {
                 <TabsContent value="signup">
                   <form onSubmit={handleSignup} className="space-y-4">
                     <div>
-                      <Label htmlFor="signup-name">Full Name</Label>
+                      <Label htmlFor="signup-name" className="text-sm">Full Name</Label>
                       <Input
                         id="signup-name"
                         type="text"
@@ -216,12 +216,12 @@ const Login = () => {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
-                        className="mt-1"
+                        className="mt-1 h-12 text-base"
                       />
                     </div>
                     
                     <div>
-                      <Label htmlFor="signup-phone">Phone Number</Label>
+                      <Label htmlFor="signup-phone" className="text-sm">Phone Number</Label>
                       <Input
                         id="signup-phone"
                         type="tel"
@@ -229,12 +229,12 @@ const Login = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         required
-                        className="mt-1"
+                        className="mt-1 h-12 text-base"
                       />
                     </div>
                     
                     <div>
-                      <Label htmlFor="signup-password">Password</Label>
+                      <Label htmlFor="signup-password" className="text-sm">Password</Label>
                       <Input
                         id="signup-password"
                         type="password"
@@ -242,19 +242,19 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="mt-1"
+                        className="mt-1 h-12 text-base"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="referral-code">Referral Code (Optional)</Label>
+                      <Label htmlFor="referral-code" className="text-sm">Referral Code (Optional)</Label>
                       <Input
                         id="referral-code"
                         type="text"
-                        placeholder="Enter referral code to earn bonus"
+                        placeholder="Enter referral code"
                         value={referralCode}
                         onChange={(e) => setReferralCode(e.target.value)}
-                        className="mt-1"
+                        className="mt-1 h-12 text-base"
                       />
                       <p className="text-xs text-gray-500 mt-1">
                         🎁 Enter a referral code to help your friend earn KSh 400!
@@ -263,7 +263,7 @@ const Login = () => {
 
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
+                      className="w-full h-12 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-base font-semibold"
                       disabled={isLoading}
                     >
                       {isLoading ? "Creating Account..." : "🚀 Create Account"}
@@ -274,7 +274,7 @@ const Login = () => {
             ) : (
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div>
-                  <Label htmlFor="forgot-phone">Phone Number</Label>
+                  <Label htmlFor="forgot-phone" className="text-sm">Phone Number</Label>
                   <Input
                     id="forgot-phone"
                     type="tel"
@@ -282,13 +282,13 @@ const Login = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="mt-1"
+                    className="mt-1 h-12 text-base"
                   />
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-base font-semibold"
                   disabled={isLoading}
                 >
                   📱 Send Reset Instructions
@@ -306,28 +306,18 @@ const Login = () => {
               </form>
             )}
 
-            {/* Demo Accounts */}
-            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-800 font-medium mb-2">🧪 Demo Accounts for Testing:</p>
-              <div className="space-y-1 text-xs">
-                <p className="text-blue-600">📱 +254700000000 | 🔑 password123</p>
-                <p className="text-blue-600">📱 +254712345678 | 🔑 demo123</p>
-                <p className="text-blue-600">📱 +254733445566 | 🔑 test123</p>
-              </div>
-            </div>
-
             {/* Features */}
-            <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <div className="text-2xl mb-1">🌱</div>
+            <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+              <div className="p-2 md:p-3 bg-green-50 rounded-lg">
+                <div className="text-xl md:text-2xl mb-1">🌱</div>
                 <div className="text-xs text-green-700 font-medium">Eco-Friendly</div>
               </div>
-              <div className="p-3 bg-yellow-50 rounded-lg">
-                <div className="text-2xl mb-1">💰</div>
+              <div className="p-2 md:p-3 bg-yellow-50 rounded-lg">
+                <div className="text-xl md:text-2xl mb-1">💰</div>
                 <div className="text-xs text-yellow-700 font-medium">Daily Returns</div>
               </div>
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <div className="text-2xl mb-1">🔒</div>
+              <div className="p-2 md:p-3 bg-blue-50 rounded-lg">
+                <div className="text-xl md:text-2xl mb-1">🔒</div>
                 <div className="text-xs text-blue-700 font-medium">100% Secure</div>
               </div>
             </div>
