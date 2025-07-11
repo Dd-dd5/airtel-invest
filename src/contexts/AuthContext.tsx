@@ -151,11 +151,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (userIndex !== -1) {
         users[userIndex].balance += amount;
+        users[userIndex].lastActivity = new Date().toISOString();
         saveUsers(users);
         
         const updatedUser = { ...user, balance: user.balance + amount };
         setUser(updatedUser);
         localStorage.setItem('solar_current_user', JSON.stringify(updatedUser));
+        
+        // Log transaction for admin tracking
+        logTransaction({
+          userId: user.phone,
+          userName: user.name,
+          userPhone: user.phone,
+          type: amount > 0 ? 'deposit' : 'withdrawal',
+          amount: Math.abs(amount),
+          status: 'completed',
+          details: { method: amount > 0 ? 'M-Pesa Deposit' : 'M-Pesa Withdrawal' }
+        });
       }
     }
   };
@@ -169,6 +181,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         users[userIndex].referralEarnings += amount;
         users[userIndex].totalReferrals += 1;
         users[userIndex].balance += amount;
+        users[userIndex].lastActivity = new Date().toISOString();
         saveUsers(users);
         
         const updatedUser = { 
@@ -179,8 +192,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
         setUser(updatedUser);
         localStorage.setItem('solar_current_user', JSON.stringify(updatedUser));
+        
+        // Log referral transaction for admin tracking
+        logTransaction({
+          userId: user.phone,
+          userName: user.name,
+          userPhone: user.phone,
+          type: 'referral_earning',
+          amount: amount,
+          status: 'completed',
+          details: { referrals: updatedUser.totalReferrals }
+        });
       }
     }
+  };
+
+  const logTransaction = (transactionData: any) => {
+    const existingTransactions = JSON.parse(localStorage.getItem('solar_admin_transactions') || '[]');
+    const newTransaction = {
+      id: `${transactionData.type}_${transactionData.userId}_${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      ...transactionData
+    };
+    
+    existingTransactions.push(newTransaction);
+    localStorage.setItem('solar_admin_transactions', JSON.stringify(existingTransactions));
   };
 
   const value = {

@@ -16,6 +16,14 @@ export const MainNavigation = () => {
     { name: "Contacts", href: "/contacts", icon: MessageCircle },
   ];
 
+  // Add admin link for development/testing (in production, this would be role-based)
+  const adminNavItems = [
+    ...navItems,
+    { name: "Admin", href: "/admin", icon: MessageCircle }
+  ];
+
+  const currentNavItems = window.location.hostname === 'localhost' ? adminNavItems : navItems;
+
   const isActive = (path: string) => location.pathname === path;
 
   const handleLogout = () => {
@@ -33,7 +41,7 @@ export const MainNavigation = () => {
             </div>
             
             <div className="flex items-center space-x-4">
-              {navItems.map((item) => (
+              {currentNavItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
@@ -90,7 +98,7 @@ export const MainNavigation = () => {
       {/* Mobile Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-50 safe-area-pb">
         <div className="grid grid-cols-4 h-16">
-          {navItems.map((item) => (
+          {currentNavItems.map((item) => (
             <Link
               key={item.name}
               to={item.href}
