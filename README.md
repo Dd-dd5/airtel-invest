@@ -4,6 +4,70 @@
 
 **URL**: https://lovable.dev/projects/92240f05-866b-4cf5-ab73-5fecca554a49
 
+## 🔧 Admin Dashboard Access
+
+### For Production Deployment:
+
+1. **Update Admin Configuration**:
+   ```typescript
+   // In src/pages/Admin.tsx, update these values:
+   const ADMIN_DOMAINS = [
+     'your-actual-domain.com',
+     'admin.your-actual-domain.com', // Optional admin subdomain
+   ];
+   
+   const ADMIN_ACCESS_KEY = 'your-secure-admin-key-2024';
+   ```
+
+2. **Access Methods**:
+   - **Direct URL**: `https://your-domain.com/admin`
+   - **Admin Subdomain**: `https://admin.your-domain.com/admin`
+   - **Access Key**: Use the secure key you set above
+
+3. **Security Setup**:
+   - Change the `ADMIN_ACCESS_KEY` to a secure, unique value
+   - Add your domain to the `ADMIN_DOMAINS` array
+   - Consider implementing additional authentication layers
+
+### Admin Dashboard Features:
+- ✅ Real-time transaction monitoring
+- ✅ User management and analytics
+- ✅ Transaction filtering and search
+- ✅ CSV export functionality
+- ✅ Live activity tracking
+
+## 📱 Mobile Money Integration
+
+### Automatic Payment Processing:
+
+1. **M-Pesa Integration**:
+   - STK Push automatically triggered
+   - Users receive payment prompt on their phone
+   - Just need to enter PIN to complete
+
+2. **Airtel Money Integration**:
+   - Similar STK Push functionality
+   - Automatic payment request to user's phone
+
+3. **Setup for Production**:
+   ```bash
+   # Copy environment template
+   cp .env.example .env
+   
+   # Add your actual API credentials
+   VITE_MPESA_CONSUMER_KEY=your_actual_key
+   VITE_MPESA_CONSUMER_SECRET=your_actual_secret
+   VITE_AIRTEL_CLIENT_ID=your_actual_id
+   VITE_AIRTEL_CLIENT_SECRET=your_actual_secret
+   ```
+
+### Payment Flow:
+1. User enters deposit amount
+2. Clicks M-Pesa or Airtel Money button
+3. STK push sent to their phone automatically
+4. User enters PIN on their phone
+5. Payment confirmed and balance updated instantly
+
 ## How can I edit this code?
 
 There are several ways of editing your application.

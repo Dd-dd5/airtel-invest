@@ -44,15 +44,48 @@ interface User {
   registrationDate: Date;
 }
 
+// Production admin access configuration
+const ADMIN_DOMAINS = [
+  'localhost',
+  'your-domain.com', // Replace with your actual domain
+  'admin.your-domain.com', // Optional admin subdomain
+];
+
+const ADMIN_ACCESS_KEY = 'solar_admin_2024'; // Change this to a secure key
+
 const Admin = () => {
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [accessKey, setAccessKey] = useState('');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTimeRange, setSelectedTimeRange] = useState("today");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Check admin access on component mount
+  useEffect(() => {
+    const currentDomain = window.location.hostname;
+    const savedAdminAccess = localStorage.getItem('solar_admin_access');
+    
+    // Check if on authorized domain or has saved access
+    if (ADMIN_DOMAINS.includes(currentDomain) || savedAdminAccess === ADMIN_ACCESS_KEY) {
+      setIsAuthorized(true);
+    }
+  }, []);
+
+  const handleAdminLogin = () => {
+    if (accessKey === ADMIN_ACCESS_KEY) {
+      setIsAuthorized(true);
+      localStorage.setItem('solar_admin_access', ADMIN_ACCESS_KEY);
+    } else {
+      alert('Invalid access key');
+    }
+  };
+
   // Load data from localStorage and set up real-time monitoring
   useEffect(() => {
+    if (!isAuthorized) return;
+    
     loadInitialData();
     
     // Set up polling to check for new transactions every 2 seconds
@@ -61,7 +94,40 @@ const Admin = () => {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isAuthorized]);
+
+  // Admin login screen
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">🔐 Admin Access</CardTitle>
+            <CardDescription>Enter admin access key to continue</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="accessKey">Access Key</Label>
+              <Input
+                id="accessKey"
+                type="password"
+                placeholder="Enter admin access key"
+                value={accessKey}
+                onChange={(e) => setAccessKey(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+              />
+            </div>
+            <Button onClick={handleAdminLogin} className="w-full">
+              Access Admin Dashboard
+            </Button>
+            <div className="text-xs text-gray-500 text-center">
+              Domain: {window.location.hostname}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const loadInitialData = () => {
     // Load users

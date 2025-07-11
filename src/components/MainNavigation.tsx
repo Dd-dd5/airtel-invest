@@ -17,12 +17,17 @@ export const MainNavigation = () => {
   ];
 
   // Add admin link for development/testing (in production, this would be role-based)
-  const adminNavItems = [
-    ...navItems,
-    { name: "Admin", href: "/admin", icon: MessageCircle }
-  ];
+  const shouldShowAdmin = () => {
+    const currentDomain = window.location.hostname;
+    const adminDomains = ['localhost', 'your-domain.com', 'admin.your-domain.com'];
+    const hasAdminAccess = localStorage.getItem('solar_admin_access');
+    
+    return adminDomains.includes(currentDomain) || hasAdminAccess;
+  };
 
-  const currentNavItems = window.location.hostname === 'localhost' ? adminNavItems : navItems;
+  const currentNavItems = shouldShowAdmin() 
+    ? [...navItems, { name: "Admin", href: "/admin", icon: MessageCircle }]
+    : navItems;
 
   const isActive = (path: string) => location.pathname === path;
 
