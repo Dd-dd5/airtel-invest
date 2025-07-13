@@ -8,118 +8,15 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Copy, Share2, Users, Gift, Wallet, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
-import { MpesaPayment } from "@/components/MpesaPayment";
+import { ManualPayment } from "@/components/ManualPayment";
+import { WithdrawalRequest } from "@/components/WithdrawalRequest";
 
 const Accounts = () => {
   const { user, updateBalance } = useAuth();
-  const [depositAmount, setDepositAmount] = useState("");
-  const [withdrawalAmount, setWithdrawalAmount] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [showMpesaPayment, setShowMpesaPayment] = useState(false);
+  const [showManualPayment, setShowManualPayment] = useState(false);
+  const [showWithdrawalRequest, setShowWithdrawalRequest] = useState(false);
 
   const referralLink = `https://solarinvest.com/signup?ref=${user?.referralCode}`;
-
-  // Mobile Money Integration
-  const initiatePayment = (amount: number, method: 'mpesa' | 'airtel') => {
-    const phone = user?.phone?.replace('+254', '254') || '';
-    
-    if (method === 'mpesa') {
-      // M-Pesa STK Push simulation
-      const mpesaUrl = `https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest`;
-      
-      // For production, you'd make an actual API call to M-Pesa
-      // For now, we'll simulate the STK push
-      simulateSTKPush(amount, phone, 'mpesa');
-    } else if (method === 'airtel') {
-      // Airtel Money integration
-      simulateSTKPush(amount, phone, 'airtel');
-    }
-  };
-
-  const simulateSTKPush = (amount: number, phone: string, provider: string) => {
-    setIsProcessing(true);
-    
-    // Show STK push notification
-    toast({
-      title: `${provider === 'mpesa' ? '📱 M-Pesa' : '📱 Airtel Money'} Payment Request`,
-      description: `Check your phone (${phone}) and enter your PIN to complete the payment of KSh ${amount.toLocaleString()}`,
-    });
-
-    // Simulate STK push delay
-    setTimeout(() => {
-      // Simulate successful payment
-      updateBalance(amount);
-      
-      toast({
-        title: "Payment Successful! ✅",
-        description: `KSh ${amount.toLocaleString()} has been added to your account via ${provider === 'mpesa' ? 'M-Pesa' : 'Airtel Money'}`,
-      });
-      
-      setDepositAmount("");
-      setIsProcessing(false);
-    }, 3000); // 3 second delay to simulate STK push
-  };
-
-  const handleDeposit = async () => {
-    if (!depositAmount || parseFloat(depositAmount) <= 0) {
-      toast({
-        title: "Invalid Amount",
-        description: "Please enter a valid deposit amount.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const amount = parseFloat(depositAmount);
-    // Default to M-Pesa for automatic payment
-    initiatePayment(amount, 'mpesa');
-  };
-
-  const handleWithdrawal = async () => {
-    if (!withdrawalAmount || parseFloat(withdrawalAmount) <= 0) {
-      toast({
-        title: "Invalid Amount",
-        description: "Please enter a valid withdrawal amount.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const amount = parseFloat(withdrawalAmount);
-    
-    if (amount < 800) {
-      toast({
-        title: "Minimum Withdrawal",
-        description: "Minimum withdrawal amount is KSh 800.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (user && amount > user.balance) {
-      toast({
-        title: "Insufficient Balance",
-        description: "You don't have enough balance for this withdrawal.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsProcessing(true);
-    
-    // Simulate processing time
-    setTimeout(() => {
-      updateBalance(-amount);
-      
-      toast({
-        title: "Withdrawal Requested! 💸",
-        description: `KSh ${amount.toLocaleString()} withdrawal has been processed. Funds will be sent to your M-Pesa within 1-2 hours.`,
-      });
-      
-      setWithdrawalAmount("");
-      setIsProcessing(false);
-    }, 2000);
-  };
 
   const copyReferralLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -199,93 +96,44 @@ const Accounts = () => {
               <CardDescription>Add funds to your solar investment account</CardDescription>
             </CardHeader>
             <CardContent>
-              {!showMpesaPayment ? (
+              {!showManualPayment ? (
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="deposit-amount">Amount (KSh)</Label>
-                    <Input
-                      id="deposit-amount"
-                      type="number"
-                      placeholder="Enter amount to deposit"
-                      value={depositAmount}
-                      onChange={(e) => setDepositAmount(e.target.value)}
-                      disabled={isProcessing}
-                    />
-                  </div>
+                  <Button 
+                    onClick={() => setShowManualPayment(true)}
+                    className="w-full bg-green-600 hover:bg-green-700 h-12 text-base font-semibold"
+                  >
+                    💰 Make a Deposit
+                  </Button>
                   
-                  <div className="grid grid-cols-1 gap-3">
-                    <Button 
-                      onClick={() => setShowMpesaPayment(true)}
-                      className="bg-green-600 hover:bg-green-700"
-                      disabled={isProcessing}
-                    >
-                      📱 Pay with M-Pesa (Enhanced)
-                    </Button>
-                    
-                    <Button 
-                      onClick={() => {
-                        if (!depositAmount || parseFloat(depositAmount) <= 0) {
-                          toast({
-                            title: "Invalid Amount",
-                            description: "Please enter a valid deposit amount.",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        initiatePayment(parseFloat(depositAmount), 'airtel');
-                      }}
-                      className="bg-red-600 hover:bg-red-700"
-                      disabled={isProcessing}
-                      variant="outline"
-                    >
-                      {isProcessing ? "Processing..." : "📱 Airtel Money (Basic)"}
-                    </Button>
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <p className="text-sm text-blue-800 font-medium mb-2">📱 How to Deposit:</p>
+                    <div className="text-sm text-blue-700 space-y-1">
+                      <p>1. Click "Make a Deposit" above</p>
+                      <p>2. Send money to: <strong>0786281379</strong></p>
+                      <p>3. Submit transaction details for verification</p>
+                      <p>4. Funds credited after admin verification</p>
+                    </div>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">M-Pesa Payment</h3>
+                    <h3 className="text-lg font-semibold">Manual Deposit</h3>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => setShowMpesaPayment(false)}
+                      onClick={() => setShowManualPayment(false)}
                     >
                       ← Back
                     </Button>
                   </div>
-                  <MpesaPayment 
-                    onPaymentSuccess={(amount, transactionId) => {
-                      setShowMpesaPayment(false);
-                      toast({
-                        title: "Deposit Successful! 🎉",
-                        description: `KSh ${amount.toLocaleString()} has been added to your account. Transaction ID: ${transactionId}`,
-                      });
-                    }}
-                    onPaymentError={(error) => {
-                      console.error('Payment error:', error);
+                  <ManualPayment 
+                    onPaymentSubmitted={(paymentId, amount) => {
+                      setShowManualPayment(false);
                     }}
                   />
                 </div>
               )}
-
-              <div className="mt-6 space-y-4 text-sm text-gray-600">
-                <p className="font-medium">📱 Instant Mobile Money Deposits:</p>
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <p className="font-bold text-blue-800 mb-2">🚀 How it works:</p>
-                  <div className="space-y-1 text-sm">
-                    <p>1. Click "Pay with M-Pesa (Enhanced)" for the best experience</p>
-                    <p>2. Enter amount and your M-Pesa phone number</p>
-                    <p>3. Check your phone for payment request</p>
-                    <p>4. Enter your PIN to complete payment</p>
-                    <p>5. Funds credited instantly to your account!</p>
-                  </div>
-                </div>
-                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                  <p className="text-green-800 font-medium">✅ Secure & Instant</p>
-                  <p className="text-sm text-green-700">Your payment is processed securely through official mobile money APIs</p>
-                </div>
-              </div>
             </CardContent>
           </Card>
 
@@ -299,36 +147,44 @@ const Accounts = () => {
               <CardDescription>Withdraw your solar investment earnings</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="withdrawal-amount">Amount (KSh)</Label>
-                  <Input
-                    id="withdrawal-amount"
-                    type="number"
-                    placeholder="Enter amount to withdraw"
-                    value={withdrawalAmount}
-                    onChange={(e) => setWithdrawalAmount(e.target.value)}
-                    disabled={isProcessing}
+              {!showWithdrawalRequest ? (
+                <div className="space-y-4">
+                  <Button 
+                    onClick={() => setShowWithdrawalRequest(true)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-base font-semibold"
+                  >
+                    💸 Request Withdrawal
+                  </Button>
+                  
+                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <p className="text-sm text-yellow-800 font-medium mb-2">⏰ Withdrawal Hours:</p>
+                    <div className="text-sm text-yellow-700 space-y-1">
+                      <p>• Monday to Friday: 9 AM - 6 PM</p>
+                      <p>• Transfer fee: 10% of withdrawal amount</p>
+                      <p>• Minimum withdrawal: KSh 800</p>
+                      <p>• Processing time: 1-4 hours</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Withdrawal Request</h3>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setShowWithdrawalRequest(false)}
+                    >
+                      ← Back
+                    </Button>
+                  </div>
+                  <WithdrawalRequest 
+                    onWithdrawalSubmitted={(requestId, amount, netAmount) => {
+                      setShowWithdrawalRequest(false);
+                    }}
                   />
                 </div>
-                <Button 
-                  onClick={handleWithdrawal} 
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? "Processing..." : "💸 Request Withdrawal"}
-                </Button>
-              </div>
-
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-800 font-medium">📋 Withdrawal Information</p>
-                <ul className="text-sm text-blue-700 mt-2 space-y-1">
-                  <li>• Minimum withdrawal: KSh 800</li>
-                  <li>• Processing time: 1-2 hours</li>
-                  <li>• Funds sent directly to your M-Pesa</li>
-                  <li>• Available 24/7</li>
-                </ul>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
