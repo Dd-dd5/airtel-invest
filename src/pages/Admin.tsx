@@ -4,8 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   Users, 
   DollarSign, 
@@ -19,8 +21,15 @@ import {
   ArrowUpCircle,
   ArrowDownCircle,
   Gift,
-  Package
+  Package,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertTriangle
 } from "lucide-react";
+import { paymentService, PendingPayment, WithdrawalRequest } from "@/services/paymentService";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/hooks/use-toast";
 
 interface Transaction {
   id: string;
@@ -61,6 +70,13 @@ const Admin = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTimeRange, setSelectedTimeRange] = useState("today");
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingPayments, setPendingPayments] = useState<PendingPayment[]>([]);
+  const [withdrawalRequests, setWithdrawalRequests] = useState<WithdrawalRequest[]>([]);
+  const [selectedPayment, setSelectedPayment] = useState<PendingPayment | null>(null);
+  const [selectedWithdrawal, setSelectedWithdrawal] = useState<WithdrawalRequest | null>(null);
+  const [adminNotes, setAdminNotes] = useState("");
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [showWithdrawalDialog, setShowWithdrawalDialog] = useState(false);
 
   // Check admin access on component mount
   useEffect(() => {
@@ -91,10 +107,130 @@ const Admin = () => {
     // Set up polling to check for new transactions every 2 seconds
     const interval = setInterval(() => {
       checkForNewTransactions();
+      loadPendingPayments();
+      loadWithdrawalRequests();
     }, 2000);
 
     return () => clearInterval(interval);
   }, [isAuthorized]);
+
+  const loadPendingPayments = () => {
+    const payments = paymentService.getPendingPayments();
+    setPendingPayments(payments);
+  };
+
+  const loadWithdrawalRequests = () => {
+    const requests = paymentService.getWithdrawalRequests();
+    setWithdrawalRequests(requests);
+  };
+
+  const handleMarkAsPaid = async (payment: PendingPayment) => {
+    const success = paymentService.markPaymentAsVerified(payment.id, adminNotes);
+    
+    if (success) {
+      // Update user balance
+      const users = JSON.parse(localStorage.getItem('solar_users_db') || '[]');
+      const userIndex = users.findIndex((u: any) => u.phone === payment.userId);
+      
+      if (userIndex !== -1) {
+        users[userIndex].balance += payment.amount;
+        localStorage.setItem('solar_users_db', JSON.stringify(users));
+      }
+      
+      // Log transaction
+      logTransaction({
+        userId: payment.userId,
+        userName: payment.userName,
+        userPhone: payment.userPhone,
+        type: 'deposit',
+        amount: payment.amount,
+        status: 'completed',
+        details: { 
+          method: payment.paymentMethod,
+          transactionCode: payment.transactionCode,
+          adminNotes: adminNotes
+        }
+      });
+      
+      toast({
+        title: "✅ Payment Verified",
+        description: `KSh ${payment.amount.toLocaleString()} has been added to ${payment.userName}'s account`,
+      });
+      
+      loadPendingPayments();
+      setShowPaymentDialog(false);
+      setAdminNotes("");
+    }
+  };
+
+  const handleRejectPayment = async (payment: PendingPayment) => {
+    const success = paymentService.rejectPayment(payment.id, adminNotes);
+    
+    if (success) {
+      toast({
+        title: "❌ Payment Rejected",
+        description: `Payment from ${payment.userName} has been rejected`,
+      });
+      
+      loadPendingPayments();
+      setShowPaymentDialog(false);
+      setAdminNotes("");
+    }
+  };
+
+  const handleProcessWithdrawal = async (withdrawal: WithdrawalRequest) => {
+    const success = paymentService.processWithdrawal(withdrawal.id, adminNotes);
+    
+    if (success) {
+      // Log transaction
+      logTransaction({
+        userId: withdrawal.userId,
+        userName: withdrawal.userName,
+        userPhone: withdrawal.userPhone,
+        type: 'withdrawal',
+        amount: withdrawal.amount,
+        status: 'completed',
+        details: { 
+          netAmount: withdrawal.netAmount,
+          transferFee: withdrawal.transferFee,
+          adminNotes: adminNotes
+        }
+      });
+      
+      toast({
+        title: "✅ Withdrawal Processed",
+        description: `KSh ${withdrawal.netAmount.toLocaleString()} sent to ${withdrawal.userName}`,
+      });
+      
+      loadWithdrawalRequests();
+      setShowWithdrawalDialog(false);
+      setAdminNotes("");
+    }
+  };
+
+  const handleRejectWithdrawal = async (withdrawal: WithdrawalRequest) => {
+    const success = paymentService.rejectWithdrawal(withdrawal.id, adminNotes);
+    
+    if (success) {
+      // Refund the amount to user balance
+      const users = JSON.parse(localStorage.getItem('solar_users_db') || '[]');
+      const userIndex = users.findIndex((u: any) => u.phone === withdrawal.userId);
+      
+      if (userIndex !== -1) {
+        users[userIndex].balance += withdrawal.amount;
+        localStorage.setItem('solar_users_db', JSON.stringify(users));
+      }
+      
+      toast({
+        title: "❌ Withdrawal Rejected",
+        description: `Withdrawal rejected. KSh ${withdrawal.amount.toLocaleString()} refunded to ${withdrawal.userName}`,
+      });
+      
+      loadWithdrawalRequests();
+      setShowWithdrawalDialog(false);
+      setAdminNotes("");
+    }
+  };
 
   // Admin login screen
   if (!isAuthorized) {
@@ -394,8 +530,24 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="transactions" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="transactions">Real-time Transactions</TabsTrigger>
+            <TabsTrigger value="pending-payments">
+              Pending Deposits
+              {pendingPayments.filter(p => p.status === 'pending').length > 0 && (
+                <Badge className="ml-2 bg-red-500 text-white">
+                  {pendingPayments.filter(p => p.status === 'pending').length}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="withdrawals">
+              Withdrawal Requests
+              {withdrawalRequests.filter(w => w.status === 'pending').length > 0 && (
+                <Badge className="ml-2 bg-orange-500 text-white">
+                  {withdrawalRequests.filter(w => w.status === 'pending').length}
+                </Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
           </TabsList>
 
@@ -513,6 +665,194 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="pending-payments">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle className="flex items-center">
+                      <Clock className="h-5 w-5 mr-2 text-orange-500" />
+                      Pending Deposit Verification
+                    </CardTitle>
+                    <CardDescription>Review and verify manual deposit submissions</CardDescription>
+                  </div>
+                  <Button onClick={loadPendingPayments} variant="outline" size="sm">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Timestamp</TableHead>
+                        <TableHead>User Details</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Payment Method</TableHead>
+                        <TableHead>Transaction Code</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pendingPayments.map((payment) => (
+                        <TableRow key={payment.id}>
+                          <TableCell className="font-mono text-sm">
+                            {new Date(payment.timestamp).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">{payment.userName}</div>
+                              <div className="text-sm text-gray-500">{payment.userPhone}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-mono font-bold text-lg">
+                            KSh {payment.amount.toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={payment.paymentMethod === 'mpesa' ? 'bg-green-500' : 'bg-red-500'}>
+                              {payment.paymentMethod === 'mpesa' ? '📱 M-Pesa' : '📱 Airtel'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="font-mono">
+                            {payment.transactionCode || 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={
+                              payment.status === 'pending' ? 'bg-yellow-500' :
+                              payment.status === 'verified' ? 'bg-green-500' :
+                              'bg-red-500'
+                            }>
+                              {payment.status === 'pending' ? '⏳ Pending' :
+                               payment.status === 'verified' ? '✅ Verified' :
+                               '❌ Rejected'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {payment.status === 'pending' && (
+                              <Button
+                                onClick={() => {
+                                  setSelectedPayment(payment);
+                                  setShowPaymentDialog(true);
+                                }}
+                                size="sm"
+                                className="bg-blue-600 hover:bg-blue-700"
+                              >
+                                <Eye className="h-4 w-4 mr-2" />
+                                Review
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {pendingPayments.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    No pending payments found.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="withdrawals">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle className="flex items-center">
+                      <ArrowDownCircle className="h-5 w-5 mr-2 text-blue-500" />
+                      Withdrawal Requests
+                    </CardTitle>
+                    <CardDescription>Process withdrawal requests and send funds</CardDescription>
+                  </div>
+                  <Button onClick={loadWithdrawalRequests} variant="outline" size="sm">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Timestamp</TableHead>
+                        <TableHead>User Details</TableHead>
+                        <TableHead>Withdrawal Amount</TableHead>
+                        <TableHead>Transfer Fee (10%)</TableHead>
+                        <TableHead>Net Amount</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {withdrawalRequests.map((request) => (
+                        <TableRow key={request.id}>
+                          <TableCell className="font-mono text-sm">
+                            {new Date(request.timestamp).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">{request.userName}</div>
+                              <div className="text-sm text-gray-500">{request.userPhone}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-mono">
+                            KSh {request.amount.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="font-mono text-red-600">
+                            KSh {request.transferFee.toLocaleString()}
+                          </TableCell>
+                          <TableCell className="font-mono font-bold text-green-600">
+                            KSh {request.netAmount.toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={
+                              request.status === 'pending' ? 'bg-yellow-500' :
+                              request.status === 'processed' ? 'bg-green-500' :
+                              'bg-red-500'
+                            }>
+                              {request.status === 'pending' ? '⏳ Pending' :
+                               request.status === 'processed' ? '✅ Processed' :
+                               '❌ Rejected'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {request.status === 'pending' && (
+                              <Button
+                                onClick={() => {
+                                  setSelectedWithdrawal(request);
+                                  setShowWithdrawalDialog(true);
+                                }}
+                                size="sm"
+                                className="bg-blue-600 hover:bg-blue-700"
+                              >
+                                <Eye className="h-4 w-4 mr-2" />
+                                Process
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {withdrawalRequests.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    No withdrawal requests found.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="users">
             <Card>
               <CardHeader>
@@ -569,6 +909,112 @@ const Admin = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Payment Verification Dialog */}
+        <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Verify Payment</DialogTitle>
+              <DialogDescription>
+                Review the payment details and mark as paid if verified
+              </DialogDescription>
+            </DialogHeader>
+            
+            {selectedPayment && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                  <div><strong>User:</strong> {selectedPayment.userName}</div>
+                  <div><strong>Phone:</strong> {selectedPayment.userPhone}</div>
+                  <div><strong>Amount:</strong> KSh {selectedPayment.amount.toLocaleString()}</div>
+                  <div><strong>Method:</strong> {selectedPayment.paymentMethod === 'mpesa' ? 'M-Pesa' : 'Airtel Money'}</div>
+                  <div><strong>Transaction Code:</strong> {selectedPayment.transactionCode || 'N/A'}</div>
+                  <div><strong>Time:</strong> {new Date(selectedPayment.timestamp).toLocaleString()}</div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="admin-notes">Admin Notes (Optional)</Label>
+                  <Textarea
+                    id="admin-notes"
+                    placeholder="Add verification notes..."
+                    value={adminNotes}
+                    onChange={(e) => setAdminNotes(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+            
+            <DialogFooter className="gap-2">
+              <Button
+                onClick={() => selectedPayment && handleRejectPayment(selectedPayment)}
+                variant="destructive"
+              >
+                <XCircle className="h-4 w-4 mr-2" />
+                Reject
+              </Button>
+              <Button
+                onClick={() => selectedPayment && handleMarkAsPaid(selectedPayment)}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Mark as Paid
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Withdrawal Processing Dialog */}
+        <Dialog open={showWithdrawalDialog} onOpenChange={setShowWithdrawalDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Process Withdrawal</DialogTitle>
+              <DialogDescription>
+                Send funds to the user's mobile money account
+              </DialogDescription>
+            </DialogHeader>
+            
+            {selectedWithdrawal && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                  <div><strong>User:</strong> {selectedWithdrawal.userName}</div>
+                  <div><strong>Phone:</strong> {selectedWithdrawal.userPhone}</div>
+                  <div><strong>Withdrawal:</strong> KSh {selectedWithdrawal.amount.toLocaleString()}</div>
+                  <div><strong>Transfer Fee:</strong> KSh {selectedWithdrawal.transferFee.toLocaleString()}</div>
+                  <div className="text-lg font-bold text-green-600">
+                    <strong>Send Amount:</strong> KSh {selectedWithdrawal.netAmount.toLocaleString()}
+                  </div>
+                  <div><strong>Time:</strong> {new Date(selectedWithdrawal.timestamp).toLocaleString()}</div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="withdrawal-notes">Processing Notes (Optional)</Label>
+                  <Textarea
+                    id="withdrawal-notes"
+                    placeholder="Add processing notes..."
+                    value={adminNotes}
+                    onChange={(e) => setAdminNotes(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+            
+            <DialogFooter className="gap-2">
+              <Button
+                onClick={() => selectedWithdrawal && handleRejectWithdrawal(selectedWithdrawal)}
+                variant="destructive"
+              >
+                <XCircle className="h-4 w-4 mr-2" />
+                Reject & Refund
+              </Button>
+              <Button
+                onClick={() => selectedWithdrawal && handleProcessWithdrawal(selectedWithdrawal)}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Mark as Sent
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
