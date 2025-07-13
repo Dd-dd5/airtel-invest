@@ -8,12 +8,14 @@ import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Copy, Share2, Users, Gift, Wallet, ArrowUpCircle, ArrowDownCircle } from "lucide-react";
+import { MpesaPayment } from "@/components/MpesaPayment";
 
 const Accounts = () => {
   const { user, updateBalance } = useAuth();
   const [depositAmount, setDepositAmount] = useState("");
   const [withdrawalAmount, setWithdrawalAmount] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showMpesaPayment, setShowMpesaPayment] = useState(false);
 
   const referralLink = `https://solarinvest.com/signup?ref=${user?.referralCode}`;
 
@@ -197,65 +199,83 @@ const Accounts = () => {
               <CardDescription>Add funds to your solar investment account</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="deposit-amount">Amount (KSh)</Label>
-                  <Input
-                    id="deposit-amount"
-                    type="number"
-                    placeholder="Enter amount to deposit"
-                    value={depositAmount}
-                    onChange={(e) => setDepositAmount(e.target.value)}
-                    disabled={isProcessing}
+              {!showMpesaPayment ? (
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="deposit-amount">Amount (KSh)</Label>
+                    <Input
+                      id="deposit-amount"
+                      type="number"
+                      placeholder="Enter amount to deposit"
+                      value={depositAmount}
+                      onChange={(e) => setDepositAmount(e.target.value)}
+                      disabled={isProcessing}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 gap-3">
+                    <Button 
+                      onClick={() => setShowMpesaPayment(true)}
+                      className="bg-green-600 hover:bg-green-700"
+                      disabled={isProcessing}
+                    >
+                      📱 Pay with M-Pesa (Enhanced)
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => {
+                        if (!depositAmount || parseFloat(depositAmount) <= 0) {
+                          toast({
+                            title: "Invalid Amount",
+                            description: "Please enter a valid deposit amount.",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        initiatePayment(parseFloat(depositAmount), 'airtel');
+                      }}
+                      className="bg-red-600 hover:bg-red-700"
+                      disabled={isProcessing}
+                      variant="outline"
+                    >
+                      {isProcessing ? "Processing..." : "📱 Airtel Money (Basic)"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">M-Pesa Payment</h3>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setShowMpesaPayment(false)}
+                    >
+                      ← Back
+                    </Button>
+                  </div>
+                  <MpesaPayment 
+                    onPaymentSuccess={(amount, transactionId) => {
+                      setShowMpesaPayment(false);
+                      toast({
+                        title: "Deposit Successful! 🎉",
+                        description: `KSh ${amount.toLocaleString()} has been added to your account. Transaction ID: ${transactionId}`,
+                      });
+                    }}
+                    onPaymentError={(error) => {
+                      console.error('Payment error:', error);
+                    }}
                   />
                 </div>
-                
-                <div className="grid grid-cols-2 gap-3">
-                  <Button 
-                    onClick={() => {
-                      if (!depositAmount || parseFloat(depositAmount) <= 0) {
-                        toast({
-                          title: "Invalid Amount",
-                          description: "Please enter a valid deposit amount.",
-                          variant: "destructive",
-                        });
-                        return;
-                      }
-                      initiatePayment(parseFloat(depositAmount), 'mpesa');
-                    }}
-                    className="bg-green-600 hover:bg-green-700"
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? "Processing..." : "📱 M-Pesa"}
-                  </Button>
-                  
-                  <Button 
-                    onClick={() => {
-                      if (!depositAmount || parseFloat(depositAmount) <= 0) {
-                        toast({
-                          title: "Invalid Amount",
-                          description: "Please enter a valid deposit amount.",
-                          variant: "destructive",
-                        });
-                        return;
-                      }
-                      initiatePayment(parseFloat(depositAmount), 'airtel');
-                    }}
-                    className="bg-red-600 hover:bg-red-700"
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? "Processing..." : "📱 Airtel Money"}
-                  </Button>
-                </div>
-              </div>
+              )}
 
               <div className="mt-6 space-y-4 text-sm text-gray-600">
                 <p className="font-medium">📱 Instant Mobile Money Deposits:</p>
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <p className="font-bold text-blue-800 mb-2">🚀 How it works:</p>
                   <div className="space-y-1 text-sm">
-                    <p>1. Enter your deposit amount above</p>
-                    <p>2. Click M-Pesa or Airtel Money button</p>
+                    <p>1. Click "Pay with M-Pesa (Enhanced)" for the best experience</p>
+                    <p>2. Enter amount and your M-Pesa phone number</p>
                     <p>3. Check your phone for payment request</p>
                     <p>4. Enter your PIN to complete payment</p>
                     <p>5. Funds credited instantly to your account!</p>

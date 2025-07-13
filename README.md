@@ -41,9 +41,10 @@
 ### Automatic Payment Processing:
 
 1. **M-Pesa Integration**:
-   - STK Push automatically triggered
+   - Enhanced STK Push with real-time status tracking
    - Users receive payment prompt on their phone
    - Just need to enter PIN to complete
+   - Automatic payment verification and balance update
 
 2. **Airtel Money Integration**:
    - Similar STK Push functionality
@@ -54,19 +55,35 @@
    # Copy environment template
    cp .env.example .env
    
-   # Add your actual API credentials
+   # Add your actual M-Pesa API credentials from Safaricom Developer Portal
    VITE_MPESA_CONSUMER_KEY=your_actual_key
    VITE_MPESA_CONSUMER_SECRET=your_actual_secret
+   
+   # Get these from: https://developer.safaricom.co.ke/
+   # 1. Create an account on Safaricom Developer Portal
+   # 2. Create a new app and select M-Pesa APIs
+   # 3. Get your Consumer Key and Consumer Secret
+   # 4. For production, use live credentials and change API URL
    VITE_AIRTEL_CLIENT_ID=your_actual_id
    VITE_AIRTEL_CLIENT_SECRET=your_actual_secret
    ```
 
 ### Payment Flow:
-1. User enters deposit amount
-2. Clicks M-Pesa or Airtel Money button
+1. User clicks "Pay with M-Pesa (Enhanced)"
+2. Enters deposit amount and M-Pesa phone number
 3. STK push sent to their phone automatically
 4. User enters PIN on their phone
-5. Payment confirmed and balance updated instantly
+5. Real-time payment verification
+6. Balance updated instantly upon confirmation
+
+### M-Pesa API Features:
+- ✅ Real STK Push integration
+- ✅ Automatic phone number formatting
+- ✅ Payment status polling
+- ✅ Error handling and user feedback
+- ✅ Demo mode for testing without credentials
+- ✅ Secure token management
+- ✅ Transaction verification
 
 ## How can I edit this code?
 
