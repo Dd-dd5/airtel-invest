@@ -102,41 +102,36 @@ const Contacts = () => {
             </CardContent>
           </Card>
 
-          {/* Office Location */}
+          {/* Support Information */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <MapPin className="h-5 w-5 mr-2 text-primary" />
-                Office Location
+                <MessageCircle className="h-5 w-5 mr-2 text-green-600" />
+                24/7 Support Available
               </CardTitle>
-              <CardDescription>Visit us at our main office</CardDescription>
+              <CardDescription>Get help whenever you need it</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Solar Investment Center</h4>
-                  <p className="text-gray-600">
-                    Westlands Square, 2nd Floor<br />
-                    Waiyaki Way, Westlands<br />
-                    Nairobi, Kenya
+                <div className="p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-semibold text-green-900 mb-2">WhatsApp Support</h4>
+                  <p className="text-green-700 mb-3">
+                    Our support team is available 24/7 via WhatsApp for instant assistance with:
                   </p>
+                  <ul className="text-sm text-green-700 space-y-1">
+                    <li>• Account management</li>
+                    <li>• Investment guidance</li>
+                    <li>• Payment support</li>
+                    <li>• Technical assistance</li>
+                  </ul>
                 </div>
                 
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-800 font-medium">Office Hours:</p>
-                  <p className="text-sm text-blue-700 mt-1">
-                    Monday - Friday: 8:00 AM - 5:00 PM<br />
-                    Saturday: 9:00 AM - 1:00 PM
-                  </p>
-                </div>
-
                 <Button
-                  onClick={() => window.open("https://maps.google.com", "_blank")}
-                  variant="outline"
-                  className="w-full"
+                  onClick={handleWhatsAppContact}
+                  className="w-full bg-green-600 hover:bg-green-700"
                 >
-                  <MapPin className="h-4 w-4 mr-2" />
-                  Get Directions
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Start WhatsApp Chat
                 </Button>
               </div>
             </CardContent>
