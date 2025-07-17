@@ -4,8 +4,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Crown, Star, Zap, Rocket, Diamond, Trophy, Target, Gift, Flame, Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { purchaseService } from "@/services/purchaseService";
+import { useState, useEffect } from "react";
 
 const Products = () => {
+  const { user } = useAuth();
+  const [purchaseCounts, setPurchaseCounts] = useState<Record<number, number>>({});
+  const [purchaseLimits, setPurchaseLimits] = useState<Record<number, { current: number; max: number }>>({});
+
+  useEffect(() => {
+    if (user) {
+      // Load purchase counts and limits for each product
+      const counts: Record<number, number> = {};
+      const limits: Record<number, { current: number; max: number }> = {};
+      
+      products.forEach(product => {
+        const count = purchaseService.getPurchaseCount(user.phone, product.id);
+        const limit = purchaseService.getPurchaseLimit(product.id);
+        
+        counts[product.id] = count;
+        limits[product.id] = {
+          current: count,
+          max: limit?.maxPurchases || -1
+        };
+      });
+      
+      setPurchaseCounts(counts);
+      setPurchaseLimits(limits);
+    }
+  }, [user]);
+
   const products = [
     {
       id: 1,
@@ -154,6 +183,131 @@ const Products = () => {
   ];
 
   const handleInvest = (product: typeof products[0]) => {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please login to purchase solar investment packages.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if user can purchase this product
+    const canPurchase = purchaseService.canPurchaseProduct(user.phone, product.id);
+    
+    if (!canPurchase.canPurchase) {
+      toast({
+        title: "Purchase Limit Reached",
+        description: canPurchase.reason,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if user has sufficient balance
+    if (user.balance < product.investment) {
+      toast({
+        title: "Insufficient Balance",
+        description: `You need KSh ${product.investment.toLocaleString()} to purchase this package. Your current balance is KSh ${user.balance.toLocaleString()}.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Record the purchase
+    const result = purchaseService.recordPurchase(
+      user.phone,
+      product.id,
+      product.name,
+      product.investment
+    );
+
+    if (result.success) {
+      // Deduct amount from user balance using the context
+      const authContext = useAuth();
+      authContext.updateBalance(-product.investment);
+      
+      // Update local purchase counts
+      setPurchaseCounts(prev => ({
+        ...prev,
+        [product.id]: (prev[product.id] || 0) + 1
+      }));
+      
+      setPurchaseLimits(prev => ({
+        ...prev,
+        [product.id]: {
+          ...prev[product.id],
+          current: (prev[product.id]?.current || 0) + 1
+        }
+      }));
+
+      toast({
+        title: "✅ Solar Investment Successful!",
+        description: `You have successfully purchased ${product.name} for KSh ${product.investment.toLocaleString()}. Start earning KSh ${product.dailyReturn.toLocaleString()} daily!`,
+      });
+    } else {
+      toast({
+        title: "Purchase Failed",
+        description: result.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getPurchaseButtonText = (product: typeof products[0]) => {
+    if (!user) return "☀️ Invest in Solar Now";
+    
+    const canPurchase = purchaseService.canPurchaseProduct(user.phone, product.id);
+    if (!canPurchase.canPurchase) {
+      return "❌ Purchase Limit Reached";
+    }
+    
+    if (user.balance < product.investment) {
+      return "💰 Insufficient Balance";
+    }
+    
+    return "☀️ Invest in Solar Now";
+  };
+
+  const isPurchaseDisabled = (product: typeof products[0]) => {
+    if (!user) return false;
+    
+    const canPurchase = purchaseService.canPurchaseProduct(user.phone, product.id);
+    return !canPurchase.canPurchase || user.balance < product.investment;
+  };
+
+  const getPurchaseLimitBadge = (product: typeof products[0]) => {
+    const limit = purchaseLimits[product.id];
+    if (!limit || limit.max === -1) return null;
+    
+    const remaining = limit.max - limit.current;
+    if (remaining <= 0) {
+      return <Badge className="bg-red-500 text-white">❌ Limit Reached</Badge>;
+    }
+    
+    return (
+      <Badge className="bg-yellow-500 text-white">
+        {remaining} purchase{remaining !== 1 ? 's' : ''} remaining
+      </Badge>
+    );
+  };
+
+  const getBalanceStatus = (product: typeof products[0]) => {
+    if (!user) return null;
+    
+    if (user.balance < product.investment) {
+      const needed = product.investment - user.balance;
+      return (
+        <div className="text-xs text-red-600 mt-1">
+          Need KSh {needed.toLocaleString()} more
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
+  const handleInvestOld = (product: typeof products[0]) => {
     toast({
       title: "Solar Investment Initiated! ☀️",
       description: `You have selected ${product.name} for KSh ${product.investment.toLocaleString()}. Please proceed to deposit funds to start earning from solar energy!`,
@@ -185,6 +339,13 @@ const Products = () => {
                 <Badge className="absolute top-4 left-4 z-10 bg-yellow-500 hover:bg-yellow-600">
                   ⭐ Most Popular
                 </Badge>
+              )}
+              
+              {/* Purchase Limit Badge */}
+              {getPurchaseLimitBadge(product) && (
+                <div className="absolute top-4 right-4 z-10">
+                  {getPurchaseLimitBadge(product)}
+                </div>
               )}
               
               {/* Product Image */}
@@ -235,6 +396,20 @@ const Products = () => {
                   </div>
                 </div>
                 
+                {/* Purchase Status */}
+                {user && (
+                  <div className="mb-4">
+                    {purchaseCounts[product.id] > 0 && (
+                      <div className="bg-blue-50 p-2 rounded-lg text-center border border-blue-200">
+                        <div className="text-sm text-blue-800">
+                          ✅ Purchased {purchaseCounts[product.id]} time{purchaseCounts[product.id] !== 1 ? 's' : ''}
+                        </div>
+                      </div>
+                    )}
+                    {getBalanceStatus(product)}
+                  </div>
+                )}
+
                 <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border border-yellow-200">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-600">Total Solar Return:</span>
@@ -257,9 +432,14 @@ const Products = () => {
 
                 <Button
                   onClick={() => handleInvest(product)}
-                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                  disabled={isPurchaseDisabled(product)}
+                  className={`w-full font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105 ${
+                    isPurchaseDisabled(product)
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white'
+                  }`}
                 >
-                  ☀️ Invest in Solar Now
+                  {getPurchaseButtonText(product)}
                 </Button>
               </CardContent>
             </Card>

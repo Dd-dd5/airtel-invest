@@ -219,13 +219,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('solar_admin_transactions', JSON.stringify(existingTransactions));
   };
 
+  // Export updateBalance function for use in components
+  const updateBalanceFunction = updateBalance;
+
   const value = {
     user,
     login,
     signup,
     logout,
     resetPassword,
-    updateBalance,
+    updateBalance: updateBalanceFunction,
     addReferralEarning,
     isAuthenticated: !!user,
   };
