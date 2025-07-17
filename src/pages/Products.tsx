@@ -446,46 +446,46 @@ const Products = () => {
         </div>
 
         {/* Solar Benefits Section */}
-        <div className="mt-16">
+        <div className="mt-8 md:mt-16">
           <Card className="bg-gradient-to-r from-green-400 via-yellow-400 to-orange-400 text-white">
-            <CardContent className="py-12">
-              <h2 className="text-3xl font-bold mb-6 text-center">🌟 Why Choose Solar Investment?</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <CardContent className="py-6 md:py-12 px-4 md:px-6">
+              <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-6 text-center">🌟 Why Choose Solar Investment?</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-center">
                 <div>
-                  <div className="text-4xl mb-4">🌍</div>
-                  <h3 className="text-xl font-bold mb-2">Environmental Impact</h3>
-                  <p>Help reduce carbon emissions and contribute to a cleaner planet while earning profits</p>
+                  <div className="text-2xl md:text-4xl mb-2 md:mb-4">🌍</div>
+                  <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Environmental Impact</h3>
+                  <p className="text-sm md:text-base">Help reduce carbon emissions and contribute to a cleaner planet while earning profits</p>
                 </div>
                 <div>
-                  <div className="text-4xl mb-4">💰</div>
-                  <h3 className="text-xl font-bold mb-2">Guaranteed Returns</h3>
-                  <p>Solar energy provides consistent, predictable returns backed by renewable energy projects</p>
+                  <div className="text-2xl md:text-4xl mb-2 md:mb-4">💰</div>
+                  <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Guaranteed Returns</h3>
+                  <p className="text-sm md:text-base">Solar energy provides consistent, predictable returns backed by renewable energy projects</p>
                 </div>
                 <div>
-                  <div className="text-4xl mb-4">🚀</div>
-                  <h3 className="text-xl font-bold mb-2">Future-Proof Investment</h3>
-                  <p>Solar energy is the future - invest in technology that will only grow in value</p>
+                  <div className="text-2xl md:text-4xl mb-2 md:mb-4">🚀</div>
+                  <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2">Future-Proof Investment</h3>
+                  <p className="text-sm md:text-base">Solar energy is the future - invest in technology that will only grow in value</p>
                 </div>
               </div>
               
-              <div className="mt-8 text-center">
-                <h3 className="text-2xl font-bold mb-4">Ready to Power Your Future with Solar?</h3>
-                <div className="flex flex-wrap justify-center gap-8 mb-6">
+              <div className="mt-6 md:mt-8 text-center">
+                <h3 className="text-lg md:text-2xl font-bold mb-3 md:mb-4">Ready to Power Your Future with Solar?</h3>
+                <div className="grid grid-cols-2 md:flex md:flex-wrap justify-center gap-4 md:gap-8 mb-4 md:mb-6">
                   <div>
-                    <div className="text-3xl font-bold">500+</div>
-                    <div className="text-white/80">Solar Investors</div>
+                    <div className="text-xl md:text-3xl font-bold">500+</div>
+                    <div className="text-xs md:text-base text-white/80">Solar Investors</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold">KSh 50M+</div>
-                    <div className="text-white/80">Solar Investments</div>
+                    <div className="text-xl md:text-3xl font-bold">KSh 50M+</div>
+                    <div className="text-xs md:text-base text-white/80">Solar Investments</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold">1000+</div>
-                    <div className="text-white/80">Solar Panels Funded</div>
+                    <div className="text-xl md:text-3xl font-bold">1000+</div>
+                    <div className="text-xs md:text-base text-white/80">Solar Panels Funded</div>
                   </div>
                   <div>
-                    <div className="text-3xl font-bold">24/7</div>
-                    <div className="text-white/80">Solar Support</div>
+                    <div className="text-xl md:text-3xl font-bold">24/7</div>
+                    <div className="text-xs md:text-base text-white/80">Solar Support</div>
                   </div>
                 </div>
               </div>

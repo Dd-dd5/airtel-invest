@@ -113,7 +113,7 @@ export const ManualPayment = ({ onPaymentSubmitted }: ManualPaymentProps) => {
             Payment Instructions
           </h3>
           
-          <div className="space-y-3 text-sm">
+          <div className="space-y-3 text-xs md:text-sm">
             <div className="bg-white p-3 rounded border">
               <div className="font-medium text-gray-900 mb-1">📱 M-Pesa Instructions:</div>
               <ol className="text-gray-700 space-y-1">
@@ -172,7 +172,7 @@ export const ManualPayment = ({ onPaymentSubmitted }: ManualPaymentProps) => {
             disabled={isSubmitting}
             min={minDeposit}
             step="1"
-            className="text-lg font-semibold"
+            className="text-base md:text-lg font-semibold"
           />
           <p className="text-xs text-gray-500 mt-1">
             Minimum deposit: KSh {minDeposit.toLocaleString()}
@@ -227,7 +227,7 @@ export const ManualPayment = ({ onPaymentSubmitted }: ManualPaymentProps) => {
         <Button
           onClick={handleSubmitPayment}
           disabled={isSubmitting || !amount || !transactionCode.trim() || parseFloat(amount || '0') < minDeposit}
-          className="w-full bg-green-600 hover:bg-green-700 h-12 text-base font-semibold"
+          className="w-full bg-green-600 hover:bg-green-700 h-10 md:h-12 text-sm md:text-base font-semibold"
         >
           {isSubmitting ? (
             <>

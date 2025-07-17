@@ -257,7 +257,7 @@ const Login = () => {
                         className="mt-1 h-12 text-base"
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        🎁 Enter a referral code to help your friend earn KSh 400!
+                        🎁 Enter a referral code to help your friend earn KSh 200!
                       </p>
                     </div>
 

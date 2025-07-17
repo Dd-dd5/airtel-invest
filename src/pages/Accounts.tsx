@@ -87,7 +87,7 @@ const Accounts = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Deposit Section */}
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-white shadow-lg h-fit">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <ArrowUpCircle className="h-6 w-6 mr-2 text-green-600" />
@@ -107,7 +107,7 @@ const Accounts = () => {
                   
                   <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                     <p className="text-sm text-blue-800 font-medium mb-2">📱 How to Deposit:</p>
-                    <div className="text-sm text-blue-700 space-y-1">
+                    <div className="text-xs md:text-sm text-blue-700 space-y-1">
                       <p>1. Click "Make a Deposit" above</p>
                       <p>2. Send money to: <strong>0786281379</strong></p>
                       <p>3. Submit transaction details for verification</p>
@@ -138,7 +138,7 @@ const Accounts = () => {
           </Card>
 
           {/* Withdrawal Section */}
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-white shadow-lg h-fit">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <ArrowDownCircle className="h-6 w-6 mr-2 text-blue-600" />
@@ -158,7 +158,7 @@ const Accounts = () => {
                   
                   <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                     <p className="text-sm text-yellow-800 font-medium mb-2">⏰ Withdrawal Hours:</p>
-                    <div className="text-sm text-yellow-700 space-y-1">
+                    <div className="text-xs md:text-sm text-yellow-700 space-y-1">
                       <p>• Monday to Friday: 9 AM - 6 PM</p>
                       <p>• Transfer fee: 10% of withdrawal amount</p>
                       <p>• Minimum withdrawal: KSh 800</p>

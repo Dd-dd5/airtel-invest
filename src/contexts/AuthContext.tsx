@@ -111,9 +111,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (referralCode) {
       const referrer = users.find((u: any) => u.referralCode === referralCode);
       if (referrer) {
-        referrer.referralEarnings = (referrer.referralEarnings || 0) + 400;
+        referrer.referralEarnings = (referrer.referralEarnings || 0) + 200;
         referrer.totalReferrals = (referrer.totalReferrals || 0) + 1;
-        referrer.balance += 400;
+        referrer.balance += 200;
       }
     }
     

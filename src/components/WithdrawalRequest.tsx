@@ -171,7 +171,7 @@ export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestPr
             min="800"
             max={user?.balance || 0}
             step="1"
-            className="text-lg font-semibold"
+            className="text-base md:text-lg font-semibold"
           />
           <p className="text-xs text-gray-500 mt-1">
             Minimum: KSh 800 • Maximum: KSh {user?.balance.toLocaleString() || '0'}
@@ -215,7 +215,7 @@ export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestPr
             currentAmount < 800 || 
             (user && currentAmount > user.balance)
           }
-          className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-base font-semibold"
+          className="w-full bg-blue-600 hover:bg-blue-700 h-10 md:h-12 text-sm md:text-base font-semibold"
         >
           {isSubmitting ? (
             <>
