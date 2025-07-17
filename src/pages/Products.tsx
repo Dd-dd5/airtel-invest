@@ -9,7 +9,7 @@ import { purchaseService } from "@/services/purchaseService";
 import { useState, useEffect } from "react";
 
 const Products = () => {
-  const { user } = useAuth();
+  const { user, updateBalance } = useAuth();
   const [purchaseCounts, setPurchaseCounts] = useState<Record<number, number>>({});
   const [purchaseLimits, setPurchaseLimits] = useState<Record<number, { current: number; max: number }>>({});
 
@@ -223,9 +223,8 @@ const Products = () => {
     );
 
     if (result.success) {
-      // Deduct amount from user balance using the context
-      const authContext = useAuth();
-      authContext.updateBalance(-product.investment);
+      // Deduct amount from user balance
+      updateBalance(-product.investment);
       
       // Update local purchase counts
       setPurchaseCounts(prev => ({
