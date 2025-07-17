@@ -30,6 +30,7 @@ import {
 import { paymentService, PendingPayment, WithdrawalRequest } from "@/services/paymentService";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { purchaseService } from "@/services/purchaseService";
 
 interface Transaction {
   id: string;
@@ -77,6 +78,7 @@ const Admin = () => {
   const [adminNotes, setAdminNotes] = useState("");
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [showWithdrawalDialog, setShowWithdrawalDialog] = useState(false);
+  const [allPurchases, setAllPurchases] = useState<any[]>([]);
 
   // Check admin access on component mount
   useEffect(() => {
@@ -109,6 +111,7 @@ const Admin = () => {
       checkForNewTransactions();
       loadPendingPayments();
       loadWithdrawalRequests();
+      loadPurchases();
     }, 2000);
 
     return () => clearInterval(interval);
@@ -122,6 +125,11 @@ const Admin = () => {
   const loadWithdrawalRequests = () => {
     const requests = paymentService.getWithdrawalRequests();
     setWithdrawalRequests(requests);
+  };
+
+  const loadPurchases = () => {
+    const purchases = purchaseService.getAllPurchases();
+    setAllPurchases(purchases);
   };
 
   const handleMarkAsPaid = async (payment: PendingPayment) => {
@@ -530,7 +538,7 @@ const Admin = () => {
         </div>
 
         <Tabs defaultValue="transactions" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="transactions">Real-time Transactions</TabsTrigger>
             <TabsTrigger value="pending-payments">
               Pending Deposits
@@ -547,6 +555,12 @@ const Admin = () => {
                   {withdrawalRequests.filter(w => w.status === 'pending').length}
                 </Badge>
               )}
+            </TabsTrigger>
+            <TabsTrigger value="purchases">
+              Product Purchases
+              <Badge className="ml-2 bg-purple-500 text-white">
+                {allPurchases.length}
+              </Badge>
             </TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
           </TabsList>
@@ -847,6 +861,95 @@ const Admin = () => {
                 {withdrawalRequests.length === 0 && (
                   <div className="text-center py-8 text-gray-500">
                     No withdrawal requests found.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="purchases">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle className="flex items-center">
+                      <Package className="h-5 w-5 mr-2 text-purple-500" />
+                      Product Purchases
+                    </CardTitle>
+                    <CardDescription>Track all product purchases and limits</CardDescription>
+                  </div>
+                  <Button onClick={loadPurchases} variant="outline" size="sm">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Purchase Time</TableHead>
+                        <TableHead>User Details</TableHead>
+                        <TableHead>Product</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Purchase Count</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {allPurchases.map((purchase) => {
+                        const userPurchaseCount = allPurchases.filter(
+                          p => p.userId === purchase.userId && p.productId === purchase.productId
+                        ).length;
+                        const limit = purchaseService.getPurchaseLimit(purchase.productId);
+                        
+                        return (
+                          <TableRow key={purchase.id}>
+                            <TableCell className="font-mono text-sm">
+                              {new Date(purchase.timestamp).toLocaleString()}
+                            </TableCell>
+                            <TableCell>
+                              <div>
+                                <div className="font-medium">{purchase.userId}</div>
+                                <div className="text-sm text-gray-500">Product ID: {purchase.productId}</div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div>
+                                <div className="font-medium">{purchase.productName}</div>
+                                <div className="text-sm text-gray-500">
+                                  Limit: {limit?.maxPurchases === -1 ? 'Unlimited' : `${limit?.maxPurchases} max`}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="font-mono">
+                              KSh {purchase.amount.toLocaleString()}
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={
+                                limit?.maxPurchases !== -1 && userPurchaseCount >= (limit?.maxPurchases || 0)
+                                  ? 'bg-red-500'
+                                  : 'bg-green-500'
+                              }>
+                                {userPurchaseCount} / {limit?.maxPurchases === -1 ? '∞' : limit?.maxPurchases}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className="bg-blue-500">
+                                {purchase.status}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {allPurchases.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    No purchases found.
                   </div>
                 )}
               </CardContent>
