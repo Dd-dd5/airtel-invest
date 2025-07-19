@@ -7,33 +7,103 @@ export default function Products() {
   const products = [
     {
       id: 1,
-      name: "Solar Basic",
-      price: "KSh 5,000",
-      returns: "8-12%",
-      duration: "6 months",
-      risk: "Low",
-      description: "Perfect for beginners looking to start their investment journey.",
-      features: ["Guaranteed returns", "Low risk", "Quick liquidity"]
+      name: "Solar Mini",
+      price: "KSh 200",
+      dailyEarnings: "KSh 50",
+      duration: "5 days",
+      totalReturn: "KSh 250",
+      description: "Quick starter package with guaranteed daily earnings.",
+      features: ["KSh 50 daily for 5 days", "Limited to 1 purchase", "Quick returns"]
     },
     {
       id: 2,
-      name: "Solar Growth", 
-      price: "KSh 15,000",
-      returns: "12-18%",
-      duration: "12 months",
-      risk: "Medium",
-      description: "Balanced investment option with steady growth potential.",
-      features: ["Higher returns", "Moderate risk", "Annual dividends"]
+      name: "Solar Micro",
+      price: "KSh 500",
+      dailyEarnings: "KSh 50",
+      duration: "30 days",
+      totalReturn: "KSh 1,500",
+      description: "Perfect entry-level investment with steady daily income.",
+      features: ["KSh 50 daily for 30 days", "Limited to 1 purchase", "Steady income"]
     },
     {
       id: 3,
+      name: "Solar Starter",
+      price: "KSh 1,000",
+      dailyEarnings: "KSh 100",
+      duration: "30 days",
+      totalReturn: "KSh 3,000",
+      description: "Great starting point for regular investors.",
+      features: ["KSh 100 daily for 30 days", "Unlimited purchases", "Consistent growth"]
+    },
+    {
+      id: 4,
+      name: "Solar Basic",
+      price: "KSh 5,000",
+      dailyEarnings: "KSh 500",
+      duration: "30 days",
+      totalReturn: "KSh 15,000",
+      description: "Solid foundation for building your investment portfolio.",
+      features: ["KSh 500 daily for 30 days", "Unlimited purchases", "Reliable returns"]
+    },
+    {
+      id: 5,
+      name: "Solar Standard",
+      price: "KSh 10,000",
+      dailyEarnings: "KSh 1,000",
+      duration: "30 days",
+      totalReturn: "KSh 30,000",
+      description: "Standard investment option for consistent growth.",
+      features: ["KSh 1,000 daily for 30 days", "Unlimited purchases", "Stable income"]
+    },
+    {
+      id: 6,
       name: "Solar Premium",
-      price: "KSh 50,000", 
-      returns: "18-25%",
-      duration: "24 months",
-      risk: "High",
-      description: "Maximum growth potential for experienced investors.",
-      features: ["Highest returns", "Premium support", "Compound growth"]
+      price: "KSh 25,000",
+      dailyEarnings: "KSh 2,500",
+      duration: "30 days",
+      totalReturn: "KSh 75,000",
+      description: "Premium investment with enhanced daily returns.",
+      features: ["KSh 2,500 daily for 30 days", "Unlimited purchases", "Premium support"]
+    },
+    {
+      id: 7,
+      name: "Solar Gold",
+      price: "KSh 50,000",
+      dailyEarnings: "KSh 5,000",
+      duration: "30 days",
+      totalReturn: "KSh 150,000",
+      description: "Gold-tier investment for serious wealth builders.",
+      features: ["KSh 5,000 daily for 30 days", "Unlimited purchases", "Priority support"]
+    },
+    {
+      id: 8,
+      name: "Solar Platinum",
+      price: "KSh 100,000",
+      dailyEarnings: "KSh 10,000",
+      duration: "30 days",
+      totalReturn: "KSh 300,000",
+      description: "Platinum-level investment for high net worth individuals.",
+      features: ["KSh 10,000 daily for 30 days", "Unlimited purchases", "VIP support"]
+    },
+    {
+      id: 9,
+      name: "Solar Diamond",
+      price: "KSh 250,000",
+      dailyEarnings: "KSh 25,000",
+      duration: "30 days",
+      totalReturn: "KSh 750,000",
+      description: "Diamond-tier investment for maximum growth potential.",
+      features: ["KSh 25,000 daily for 30 days", "Unlimited purchases", "Dedicated advisor"]
+    },
+    {
+      id: 10,
+      name: "Solar Elite",
+      price: "KSh 500,000",
+      dailyEarnings: "KSh 50,000",
+      duration: "30 days",
+      totalReturn: "KSh 1,500,000",
+      description: "Elite investment package for wealth maximization.",
+      features: ["KSh 50,000 daily for 30 days", "Unlimited purchases", "Elite benefits"]
     }
   ];
 
@@ -59,14 +129,11 @@ export default function Products() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
           {products.map((product) => (
             <Card key={product.id} className="hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
               <CardHeader>
-                <div className="flex justify-between items-start mb-2">
-                  <CardTitle className="text-xl text-primary">{product.name}</CardTitle>
-                  <Badge className={getRiskColor(product.risk)}>{product.risk} Risk</Badge>
-                </div>
+                <CardTitle className="text-xl text-primary mb-2">{product.name}</CardTitle>
                 <CardDescription className="text-sm">{product.description}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -76,8 +143,12 @@ export default function Products() {
                     <span className="font-bold text-primary">{product.price}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Expected Returns</span>
-                    <span className="font-bold text-green-600">{product.returns}</span>
+                    <span className="text-sm font-medium">Daily Earnings</span>
+                    <span className="font-bold text-green-600">{product.dailyEarnings}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">Total Return</span>
+                    <span className="font-bold text-green-600">{product.totalReturn}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Duration</span>

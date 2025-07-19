@@ -16,7 +16,7 @@ export interface PurchaseLimit {
 
 class PurchaseService {
   private readonly PURCHASE_LIMITS: PurchaseLimit[] = [
-    { productId: 1, maxPurchases: 2 }, // Solar Mini (KSh 200) - max 2 times
+    { productId: 1, maxPurchases: 1 }, // Solar Mini (KSh 200) - max 1 time
     { productId: 2, maxPurchases: 1 }, // Solar Micro (KSh 500) - max 1 time
     { productId: 3, maxPurchases: -1 }, // Solar Starter - unlimited
     { productId: 4, maxPurchases: -1 }, // Solar Basic - unlimited
