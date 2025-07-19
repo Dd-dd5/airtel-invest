@@ -64,6 +64,7 @@ const ADMIN_DOMAINS = [
 const ADMIN_ACCESS_KEY = 'solar_admin_2024'; // Change this to a secure key
 
 const Admin = () => {
+  const { logTransaction } = useAuth();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [accessKey, setAccessKey] = useState('');
   const [transactions, setTransactions] = useState<Transaction[]>([]);

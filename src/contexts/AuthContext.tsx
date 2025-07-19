@@ -17,6 +17,7 @@ interface AuthContextType {
   resetPassword: (phone: string) => Promise<boolean>;
   updateBalance: (amount: number) => void;
   addReferralEarning: (amount: number) => void;
+  logTransaction: (transactionData: any) => void;
   isAuthenticated: boolean;
 }
 
@@ -230,6 +231,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     resetPassword,
     updateBalance: updateBalanceFunction,
     addReferralEarning,
+    logTransaction,
     isAuthenticated: !!user,
   };
 
