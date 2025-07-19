@@ -2,8 +2,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Zap, TrendingUp, Shield, Clock } from "lucide-react";
+import { MainNavigation } from "@/components/MainNavigation";
+import solarMiniImg from "@/assets/solar-mini.jpg";
+import solarMicroImg from "@/assets/solar-micro.jpg";
+import solarStandardImg from "@/assets/solar-standard.jpg";
 
 export default function Products() {
+  const productImages = [
+    solarMiniImg, solarMicroImg, solarStandardImg, 
+    "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1473091534298-04dcbce3278c?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=400&h=300&fit=crop",
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=300&fit=crop"
+  ];
+  
   const products = [
     {
       id: 1,
@@ -117,58 +132,72 @@ export default function Products() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-primary mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-yellow-100 pb-20 md:pb-0">
+      <MainNavigation />
+      
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Solar Investment Products
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
             Choose from our range of investment products designed to help you grow your wealth
             with the power of renewable energy.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-          {products.map((product) => (
-            <Card key={product.id} className="hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
-              <CardHeader>
-                <CardTitle className="text-xl text-primary mb-2">{product.name}</CardTitle>
-                <CardDescription className="text-sm">{product.description}</CardDescription>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
+          {products.map((product, index) => (
+            <Card key={product.id} className="hover:shadow-xl transition-all duration-300 border-2 hover:border-primary/20 bg-white overflow-hidden">
+              <div className="relative">
+                <img 
+                  src={productImages[index] || productImages[index % productImages.length]} 
+                  alt={product.name}
+                  className="w-full h-40 md:h-48 object-cover"
+                />
+                <div className="absolute top-2 right-2">
+                  <Badge className="bg-primary text-primary-foreground px-2 py-1 text-xs">
+                    {product.id <= 2 ? "Limited" : "Unlimited"}
+                  </Badge>
+                </div>
+              </div>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg md:text-xl text-primary mb-2">{product.name}</CardTitle>
+                <CardDescription className="text-xs md:text-sm">{product.description}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
+              <CardContent className="space-y-3 md:space-y-4">
+                <div className="space-y-2 md:space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Minimum Investment</span>
-                    <span className="font-bold text-primary">{product.price}</span>
+                    <span className="text-xs md:text-sm font-medium">Investment</span>
+                    <span className="font-bold text-primary text-sm md:text-base">{product.price}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Daily Earnings</span>
-                    <span className="font-bold text-green-600">{product.dailyEarnings}</span>
+                    <span className="text-xs md:text-sm font-medium">Daily Earnings</span>
+                    <span className="font-bold text-green-600 text-sm md:text-base">{product.dailyEarnings}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Total Return</span>
-                    <span className="font-bold text-green-600">{product.totalReturn}</span>
+                    <span className="text-xs md:text-sm font-medium">Total Return</span>
+                    <span className="font-bold text-green-600 text-sm md:text-base">{product.totalReturn}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Duration</span>
-                    <span className="font-medium">{product.duration}</span>
+                    <span className="text-xs md:text-sm font-medium">Duration</span>
+                    <span className="font-medium text-sm md:text-base">{product.duration}</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Key Features:</h4>
+                  <h4 className="font-medium text-xs md:text-sm">Key Features:</h4>
                   <ul className="space-y-1">
-                    {product.features.map((feature, index) => (
-                      <li key={index} className="text-sm text-muted-foreground flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                    {product.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="text-xs md:text-sm text-muted-foreground flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full flex-shrink-0"></div>
                         {feature}
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <Button className="w-full">
+                <Button className="w-full h-9 md:h-10 text-sm md:text-base">
                   Invest Now
                 </Button>
               </CardContent>
@@ -176,26 +205,26 @@ export default function Products() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <Card className="text-center p-6">
-            <Zap className="w-8 h-8 text-primary mx-auto mb-3" />
-            <h3 className="font-semibold mb-2">Renewable Energy</h3>
-            <p className="text-sm text-muted-foreground">Invest in the future of clean energy</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
+          <Card className="text-center p-4 md:p-6 bg-white shadow-lg">
+            <Zap className="w-6 h-6 md:w-8 md:h-8 text-primary mx-auto mb-2 md:mb-3" />
+            <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">Renewable Energy</h3>
+            <p className="text-xs md:text-sm text-muted-foreground">Invest in the future of clean energy</p>
           </Card>
-          <Card className="text-center p-6">
-            <TrendingUp className="w-8 h-8 text-primary mx-auto mb-3" />
-            <h3 className="font-semibold mb-2">Growing Returns</h3>
-            <p className="text-sm text-muted-foreground">Competitive returns on your investment</p>
+          <Card className="text-center p-4 md:p-6 bg-white shadow-lg">
+            <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-primary mx-auto mb-2 md:mb-3" />
+            <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">Growing Returns</h3>
+            <p className="text-xs md:text-sm text-muted-foreground">Competitive returns on your investment</p>
           </Card>
-          <Card className="text-center p-6">
-            <Shield className="w-8 h-8 text-primary mx-auto mb-3" />
-            <h3 className="font-semibold mb-2">Secure Platform</h3>
-            <p className="text-sm text-muted-foreground">Your investments are protected</p>
+          <Card className="text-center p-4 md:p-6 bg-white shadow-lg">
+            <Shield className="w-6 h-6 md:w-8 md:h-8 text-primary mx-auto mb-2 md:mb-3" />
+            <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">Secure Platform</h3>
+            <p className="text-xs md:text-sm text-muted-foreground">Your investments are protected</p>
           </Card>
-          <Card className="text-center p-6">
-            <Clock className="w-8 h-8 text-primary mx-auto mb-3" />
-            <h3 className="font-semibold mb-2">Flexible Terms</h3>
-            <p className="text-sm text-muted-foreground">Choose investment periods that suit you</p>
+          <Card className="text-center p-4 md:p-6 bg-white shadow-lg">
+            <Clock className="w-6 h-6 md:w-8 md:h-8 text-primary mx-auto mb-2 md:mb-3" />
+            <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">Flexible Terms</h3>
+            <p className="text-xs md:text-sm text-muted-foreground">Choose investment periods that suit you</p>
           </Card>
         </div>
       </div>

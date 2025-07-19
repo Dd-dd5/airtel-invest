@@ -22,7 +22,7 @@ const Accounts = () => {
     navigator.clipboard.writeText(referralLink);
     toast({
       title: "Referral Link Copied! 📋",
-      description: "Share this link with friends to earn KSh 400 per referral!",
+      description: "Share this link with friends to earn KSh 200 per referral!",
     });
   };
 
@@ -194,17 +194,17 @@ const Accounts = () => {
           <CardHeader>
             <CardTitle className="flex items-center text-2xl">
               <Share2 className="h-8 w-8 mr-3" />
-              🎁 Referral Program - Earn KSh 400 per Friend!
+              🎁 Referral Program - Earn KSh 200 per Friend!
             </CardTitle>
             <CardDescription className="text-purple-100">
-              Share Solar Invest with friends and earn KSh 400 for every friend who purchases a package
+              Share Solar Invest with friends and earn KSh 200 for every friend who purchases a package
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div className="bg-white/10 p-4 rounded-lg">
-                  <div className="text-3xl font-bold">KSh 400</div>
+                  <div className="text-3xl font-bold">KSh 200</div>
                   <div className="text-purple-100">Per Referral</div>
                 </div>
                 <div className="bg-white/10 p-4 rounded-lg">
@@ -258,7 +258,7 @@ const Accounts = () => {
                 <ol className="text-sm space-y-1">
                   <li>1. Share your referral link with friends</li>
                   <li>2. They sign up using your link</li>
-                  <li>3. When they purchase any solar package, you earn KSh 400!</li>
+                  <li>3. When they purchase any solar package, you earn KSh 200!</li>
                   <li>4. Earnings are added instantly to your balance</li>
                 </ol>
               </div>

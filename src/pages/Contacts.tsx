@@ -30,7 +30,7 @@ const Contacts = () => {
     },
     {
       question: "How does the referral program work?",
-      answer: "Share your referral link with friends. When they sign up and purchase any package, you earn KSh 400 instantly."
+      answer: "Share your referral link with friends. When they sign up and purchase any package, you earn KSh 200 instantly."
     },
     {
       question: "Is my investment secure?",

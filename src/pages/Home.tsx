@@ -178,7 +178,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-orange-100 mb-3 md:mb-4 text-sm md:text-base">
-                    Earn KSh 400 for every friend you refer who purchases a package. Build your network!
+                    Earn KSh 200 for every friend you refer who purchases a package. Build your network!
                   </p>
                   <Link to="/accounts">
                     <Button variant="secondary" className="w-full h-10 md:h-auto">
