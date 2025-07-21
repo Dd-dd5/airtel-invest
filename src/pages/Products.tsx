@@ -1,13 +1,22 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Zap, TrendingUp, Shield, Clock } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Zap, TrendingUp, Shield, Clock, ShoppingCart } from "lucide-react";
 import { MainNavigation } from "@/components/MainNavigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { purchaseService } from "@/services/purchaseService";
+import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
 import solarMiniImg from "@/assets/solar-mini.jpg";
 import solarMicroImg from "@/assets/solar-micro.jpg";
 import solarStandardImg from "@/assets/solar-standard.jpg";
 
 export default function Products() {
+  const { user, updateBalance } = useAuth();
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [isInvestmentDialogOpen, setIsInvestmentDialogOpen] = useState(false);
+
   const productImages = [
     solarMiniImg, solarMicroImg, solarStandardImg, 
     "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=300&fit=crop",
@@ -122,13 +131,73 @@ export default function Products() {
     }
   ];
 
-  const getRiskColor = (risk: string) => {
-    switch (risk) {
-      case "Low": return "bg-green-100 text-green-800";
-      case "Medium": return "bg-yellow-100 text-yellow-800";
-      case "High": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+  const handleInvestNow = (product: any) => {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please login to invest in our products.",
+        variant: "destructive",
+      });
+      return;
     }
+
+    setSelectedProduct(product);
+    setIsInvestmentDialogOpen(true);
+  };
+
+  const confirmInvestment = () => {
+    if (!user || !selectedProduct) return;
+
+    // Check if user can purchase this product
+    const canPurchase = purchaseService.canPurchaseProduct(user.phone, selectedProduct.id);
+    
+    if (!canPurchase.canPurchase) {
+      toast({
+        title: "Purchase Limit Reached",
+        description: canPurchase.reason,
+        variant: "destructive",
+      });
+      setIsInvestmentDialogOpen(false);
+      return;
+    }
+
+    // Check if user has sufficient balance
+    const price = parseInt(selectedProduct.price.replace('KSh ', '').replace(',', ''));
+    if (user.balance < price) {
+      toast({
+        title: "Insufficient Balance",
+        description: `You need KSh ${price.toLocaleString()} to invest in ${selectedProduct.name}. Please top up your account.`,
+        variant: "destructive",
+      });
+      setIsInvestmentDialogOpen(false);
+      return;
+    }
+
+    // Record the purchase
+    const result = purchaseService.recordPurchase(
+      user.phone,
+      selectedProduct.id,
+      selectedProduct.name,
+      price
+    );
+
+    if (result.success) {
+      // Deduct amount from user balance
+      updateBalance(-price);
+      
+      toast({
+        title: "Investment Successful! 🎉",
+        description: `You've successfully invested in ${selectedProduct.name}. You'll start earning ${selectedProduct.dailyEarnings} daily!`,
+      });
+    } else {
+      toast({
+        title: "Investment Failed",
+        description: result.message,
+        variant: "destructive",
+      });
+    }
+
+    setIsInvestmentDialogOpen(false);
   };
 
   return (
@@ -197,7 +266,11 @@ export default function Products() {
                   </ul>
                 </div>
 
-                <Button className="w-full h-9 md:h-10 text-sm md:text-base">
+                <Button 
+                  className="w-full h-9 md:h-10 text-sm md:text-base"
+                  onClick={() => handleInvestNow(product)}
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
                   Invest Now
                 </Button>
               </CardContent>
@@ -227,6 +300,63 @@ export default function Products() {
             <p className="text-xs md:text-sm text-muted-foreground">Choose investment periods that suit you</p>
           </Card>
         </div>
+
+        {/* Investment Confirmation Dialog */}
+        <Dialog open={isInvestmentDialogOpen} onOpenChange={setIsInvestmentDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Confirm Investment</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to invest in {selectedProduct?.name}?
+              </DialogDescription>
+            </DialogHeader>
+            {selectedProduct && (
+              <div className="space-y-4">
+                <div className="p-4 bg-gray-50 rounded-lg space-y-2">
+                  <div className="flex justify-between">
+                    <span className="font-medium">Product:</span>
+                    <span>{selectedProduct.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Investment:</span>
+                    <span className="text-primary font-bold">{selectedProduct.price}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Daily Earnings:</span>
+                    <span className="text-green-600 font-bold">{selectedProduct.dailyEarnings}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Duration:</span>
+                    <span>{selectedProduct.duration}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Total Return:</span>
+                    <span className="text-green-600 font-bold">{selectedProduct.totalReturn}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-medium">Your Balance:</span>
+                    <span className="font-bold">KSh {user?.balance.toLocaleString()}</span>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => setIsInvestmentDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    className="flex-1"
+                    onClick={confirmInvestment}
+                  >
+                    Confirm Investment
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
