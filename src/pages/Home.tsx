@@ -13,13 +13,17 @@ const Home = () => {
 
   // Mock live transactions
   const generateTransaction = () => {
-    const names = ['John K.', 'Mary W.', 'Peter M.', 'Sarah L.', 'David N.', 'Grace A.', 'Michael O.', 'Lucy K.'];
+    const phoneNumbers = [
+      '0712****45', '0724****89', '0735****23', '0748****67', 
+      '0701****91', '0715****34', '0729****78', '0742****56',
+      '0733****12', '0756****43', '0768****87', '0711****29'
+    ];
     const amounts = [1000, 2000, 5000, 10000, 25000, 50000, 100000];
     const types = ['deposit', 'investment', 'withdrawal'];
     
     return {
       id: Date.now() + Math.random(),
-      name: names[Math.floor(Math.random() * names.length)],
+      name: phoneNumbers[Math.floor(Math.random() * phoneNumbers.length)],
       amount: amounts[Math.floor(Math.random() * amounts.length)],
       type: types[Math.floor(Math.random() * types.length)],
       timestamp: new Date()
