@@ -121,9 +121,8 @@ export const ManualPayment = ({ onPaymentSubmitted }: ManualPaymentProps) => {
                 <li>2. Select "Send Money"</li>
                 <li>3. Enter: <strong>{paybillNumber}</strong></li>
                 <li>4. Enter amount: KSh {amount || 'XXX'}</li>
-                <li>5. Enter your phone as account number</li>
-                <li>6. Enter PIN and send</li>
-                <li>7. Copy the transaction code below</li>
+                <li>5. Enter PIN and send</li>
+                <li>6. Copy the transaction code below</li>
               </ol>
             </div>
 
