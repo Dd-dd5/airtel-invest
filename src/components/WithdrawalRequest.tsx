@@ -241,7 +241,7 @@ export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestPr
                   <li>• Processing hours: Monday to Friday, 9 AM to 6 PM</li>
                   <li>• Transfer fee: {feePercent}% of withdrawal amount</li>
                   <li>• Funds sent directly to your registered phone number</li>
-                  <li>• Processing time: 1-4 hours during business hours</li>
+                  <li>• Processing time: 10 mins to 1 hour during business hours</li>
                   <li>• Minimum withdrawal: KSh 800</li>
                 </ul>
               </div>
