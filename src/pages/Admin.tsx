@@ -57,6 +57,7 @@ interface User {
 // Production admin access configuration
 const ADMIN_DOMAINS = [
   'localhost',
+  'investmentke.top',
   'your-domain.com', // Replace with your actual domain
   'admin.your-domain.com', // Optional admin subdomain
 ];
