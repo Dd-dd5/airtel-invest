@@ -57,9 +57,9 @@ interface User {
 // Production admin access configuration
 const ADMIN_DOMAINS = [
   'localhost',
-  'investmentke.top',
-  'your-domain.com', // Replace with your actual domain
-  'admin.your-domain.com', // Optional admin subdomain
+  'yourdomain.com', // Replace with your actual TrueHost domain
+  'www.yourdomain.com',
+  'admin.yourdomain.com', // Optional admin subdomain
 ];
 
 const ADMIN_ACCESS_KEY = 'solar_admin_2024'; // Change this to a secure key
