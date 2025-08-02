@@ -121,7 +121,7 @@ VITE_AIRTEL_CLIENT_ID=your_actual_id
 VITE_AIRTEL_CLIENT_SECRET=your_actual_secret
 
 ## Build Command
-npm run build:truehost
+npm run build
 
 This will create optimized files in the 'dist' folder ready for TrueHost.
 `;

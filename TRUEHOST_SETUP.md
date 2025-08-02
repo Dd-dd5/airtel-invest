@@ -8,7 +8,7 @@
 ## Step 1: Build the Application
 ```bash
 npm install
-npm run build:truehost
+npm run build
 ```
 
 ## Step 2: Upload Files to TrueHost
