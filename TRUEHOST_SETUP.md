@@ -8,7 +8,12 @@
 ## Step 1: Build the Application
 ```bash
 npm install
-npm run build
+node build.js
+```
+
+Alternative if the above doesn't work:
+```bash
+npx vite build && node scripts/post-build.js
 ```
 
 ## Step 2: Upload Files to TrueHost
