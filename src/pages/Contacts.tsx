@@ -6,7 +6,7 @@ import { MessageCircle, MapPin, Clock, Users } from "lucide-react";
 
 const Contacts = () => {
   const handleWhatsAppContact = () => {
-    window.open("https://wa.me/254750308048", "_blank");
+    window.open("https://chat.whatsapp.com/KUItJCiDm3d3U9GbLBVXis?mode=ac_t", "_blank");
   };
 
   const operatingHours = [
@@ -60,14 +60,14 @@ const Contacts = () => {
             </CardHeader>
             <CardContent>
               <div className="mb-4">
-                <p className="font-semibold text-gray-900">+254 750 308 048</p>
+                <p className="font-semibold text-gray-900">WhatsApp Group</p>
               </div>
               <Button
                 onClick={handleWhatsAppContact}
                 className="w-full bg-green-600 hover:bg-green-700"
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
-                Chat on WhatsApp
+                Join WhatsApp Group
               </Button>
             </CardContent>
           </Card>
@@ -116,7 +116,7 @@ const Contacts = () => {
                 <div className="p-4 bg-green-50 rounded-lg">
                   <h4 className="font-semibold text-green-900 mb-2">WhatsApp Support</h4>
                   <p className="text-green-700 mb-3">
-                    Our support team is available 24/7 via WhatsApp for instant assistance with:
+                    Join our WhatsApp group for 24/7 community support and assistance with:
                   </p>
                   <ul className="text-sm text-green-700 space-y-1">
                     <li>• Account management</li>
@@ -131,7 +131,7 @@ const Contacts = () => {
                   className="w-full bg-green-600 hover:bg-green-700"
                 >
                   <MessageCircle className="h-4 w-4 mr-2" />
-                  Start WhatsApp Chat
+                  Join WhatsApp Group
                 </Button>
               </div>
             </CardContent>
@@ -160,7 +160,7 @@ const Contacts = () => {
             <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
               <p className="text-sm text-yellow-800 font-medium">Still have questions?</p>
               <p className="text-sm text-yellow-700 mt-1">
-                Contact our support team via WhatsApp for personalized assistance!
+                Join our WhatsApp group for community support and assistance!
               </p>
               <Button
                 onClick={handleWhatsAppContact}
@@ -168,7 +168,7 @@ const Contacts = () => {
                 size="sm"
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
-                Chat with Support
+                Join Group
               </Button>
             </div>
           </CardContent>
