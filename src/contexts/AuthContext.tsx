@@ -68,7 +68,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (phone: string, password: string): Promise<boolean> => {
     const users = getUsers();
-    const foundUser = users.find((u: any) => u.phone === phone && u.password === password);
+    const foundUser = users.find((u: any) => {
+      console.log('Checking user:', u.phone, 'against:', phone);
+      console.log('Password match:', u.password === password);
+      return u.phone === phone && u.password === password;
+    });
+    
+    console.log('Found user:', foundUser);
+    console.log('All users:', users);
+    
     if (foundUser) {
       const userData = { 
         phone: foundUser.phone, 
@@ -89,8 +97,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const users = getUsers();
     
     // Check if user already exists
-    const existingUser = users.find((u: any) => u.phone === phone);
+    const existingUser = users.find((u: any) => {
+      console.log('Checking existing user:', u.phone, 'against:', phone);
+      return u.phone === phone;
+    });
+    
     if (existingUser) {
+      console.log('User already exists:', existingUser);
       return false; // User already exists
     }
     
@@ -108,6 +121,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       totalReferrals: 0
     };
     
+    console.log('Creating new user:', newUser);
+    
     // If referred by someone, add referral bonus to referrer
     if (referralCode) {
       const referrer = users.find((u: any) => u.referralCode === referralCode);
@@ -120,6 +135,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     users.push(newUser);
     saveUsers(users);
+    
+    console.log('Users after signup:', users);
     
     const userData = { 
       phone, 

@@ -26,8 +26,12 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    console.log('Attempting login with:', { phone, password });
+
     try {
       const success = await login(phone, password);
+      console.log('Login result:', success);
+      
       if (success) {
         toast({
           title: "Welcome Back! ☀️",
@@ -41,6 +45,7 @@ const Login = () => {
         });
       }
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Error",
         description: "An error occurred during login.",
@@ -55,8 +60,11 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    console.log('Attempting signup with:', { phone, password, name, referralCode });
     try {
       const success = await signup(phone, password, name, referralCode);
+      console.log('Signup result:', success);
+      
       if (success) {
         toast({
           title: "Account Created! 🎉",
@@ -70,6 +78,7 @@ const Login = () => {
         });
       }
     } catch (error) {
+      console.error('Signup error:', error);
       toast({
         title: "Error",
         description: "An error occurred during signup.",
