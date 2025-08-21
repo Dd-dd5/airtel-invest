@@ -6,16 +6,16 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "../contexts/AuthContext";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Sun, Leaf, Zap } from "lucide-react";
 
 const Login = () => {
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [referralCode, setReferralCode] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  
   const { login, signup, resetPassword, isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
@@ -24,33 +24,20 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
     setIsLoading(true);
-
-    console.log('Attempting login with:', { phone, password });
-
     try {
-      const success = await login(phone, password);
-      console.log('Login result:', success);
-      
+      const success = await login(email, password);
       if (success) {
-        toast({
-          title: "Welcome Back! ☀️",
-          description: "Successfully logged into your Solar Invest account!",
-        });
-      } else {
-        toast({
-          title: "Login Failed",
-          description: "Invalid phone number or password. Please try again.",
-          variant: "destructive",
-        });
+        // Redirect will be handled by the auth state change
+        window.location.href = '/';
       }
     } catch (error) {
-      console.error('Login error:', error);
-      toast({
-        title: "Error",
-        description: "An error occurred during login.",
-        variant: "destructive",
-      });
+      toast.error("Login failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -58,32 +45,27 @@ const Login = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (!email || !password || !fullName) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
-    console.log('Attempting signup with:', { phone, password, name, referralCode });
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      const success = await signup(phone, password, name, referralCode);
-      console.log('Signup result:', success);
-      
+      const success = await signup(email, password, fullName);
       if (success) {
-        toast({
-          title: "Account Created! 🎉",
-          description: "Welcome to Solar Invest! Start your solar investment journey today.",
-        });
-      } else {
-        toast({
-          title: "Signup Failed",
-          description: "User with this phone number already exists.",
-          variant: "destructive",
-        });
+        // Clear the form
+        setEmail('');
+        setPassword('');
+        setFullName('');
       }
     } catch (error) {
-      console.error('Signup error:', error);
-      toast({
-        title: "Error",
-        description: "An error occurred during signup.",
-        variant: "destructive",
-      });
+      toast.error("Signup failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -91,36 +73,22 @@ const Login = () => {
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone) {
-      toast({
-        title: "Phone Required",
-        description: "Please enter your phone number.",
-        variant: "destructive",
-      });
+    if (!email) {
+      toast.error("Please enter your email address");
       return;
     }
 
+    setIsLoading(true);
     try {
-      const success = await resetPassword(phone);
+      const success = await resetPassword(email);
       if (success) {
-        toast({
-          title: "Reset Instructions Sent! 📱",
-          description: "Check your SMS for password reset instructions.",
-        });
         setShowForgotPassword(false);
-      } else {
-        toast({
-          title: "User Not Found",
-          description: "No account found with this phone number.",
-          variant: "destructive",
-        });
+        setEmail('');
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send reset instructions.",
-        variant: "destructive",
-      });
+      toast.error("Password reset failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -153,7 +121,7 @@ const Login = () => {
             </CardTitle>
             <CardDescription className="text-sm">
               {showForgotPassword 
-                ? "Enter your phone number to reset your password" 
+                ? "Enter your email address to reset your password" 
                 : "Login or create your solar investment account"
               }
             </CardDescription>
@@ -169,13 +137,13 @@ const Login = () => {
                 <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div>
-                      <Label htmlFor="phone" className="text-sm">Phone Number</Label>
+                      <Label htmlFor="email" className="text-sm">Email Address</Label>
                       <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="+254700000000"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        id="email"
+                        type="email"
+                        placeholder="your@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                         className="mt-1 h-12 text-base"
                       />
@@ -222,21 +190,21 @@ const Login = () => {
                         id="signup-name"
                         type="text"
                         placeholder="Enter your full name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
                         required
                         className="mt-1 h-12 text-base"
                       />
                     </div>
                     
                     <div>
-                      <Label htmlFor="signup-phone" className="text-sm">Phone Number</Label>
+                      <Label htmlFor="signup-email" className="text-sm">Email Address</Label>
                       <Input
-                        id="signup-phone"
-                        type="tel"
-                        placeholder="+254700000000"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        id="signup-email"
+                        type="email"
+                        placeholder="your@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                         className="mt-1 h-12 text-base"
                       />
@@ -247,27 +215,12 @@ const Login = () => {
                       <Input
                         id="signup-password"
                         type="password"
-                        placeholder="Create a strong password"
+                        placeholder="Create a strong password (min 6 characters)"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         className="mt-1 h-12 text-base"
                       />
-                    </div>
-
-                    <div>
-                      <Label htmlFor="referral-code" className="text-sm">Referral Code (Optional)</Label>
-                      <Input
-                        id="referral-code"
-                        type="text"
-                        placeholder="Enter referral code"
-                        value={referralCode}
-                        onChange={(e) => setReferralCode(e.target.value)}
-                        className="mt-1 h-12 text-base"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        🎁 Enter a referral code to help your friend earn KSh 200!
-                      </p>
                     </div>
 
                     <Button
@@ -283,13 +236,13 @@ const Login = () => {
             ) : (
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div>
-                  <Label htmlFor="forgot-phone" className="text-sm">Phone Number</Label>
+                  <Label htmlFor="forgot-email" className="text-sm">Email Address</Label>
                   <Input
-                    id="forgot-phone"
-                    type="tel"
-                    placeholder="+254700000000"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    id="forgot-email"
+                    type="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     className="mt-1 h-12 text-base"
                   />
@@ -300,7 +253,7 @@ const Login = () => {
                   className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-base font-semibold"
                   disabled={isLoading}
                 >
-                  📱 Send Reset Instructions
+                  📧 Send Reset Instructions
                 </Button>
 
                 <div className="text-center">

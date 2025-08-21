@@ -14,7 +14,7 @@ interface WithdrawalRequestProps {
 }
 
 export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestProps) => {
-  const { user, updateBalance } = useAuth();
+  const { user, profile, updateBalance } = useAuth();
   const [amount, setAmount] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -49,7 +49,7 @@ export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestPr
       return;
     }
 
-    if (user && currentAmount > user.balance) {
+    if (profile && currentAmount > profile.balance) {
       toast({
         title: "Insufficient Balance",
         description: "You don't have enough balance for this withdrawal",
@@ -71,9 +71,9 @@ export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestPr
 
     try {
       const result = paymentService.submitWithdrawalRequest(
-        user?.phone || '',
-        user?.name || '',
-        user?.phone || '',
+        profile?.phone || '',
+        profile?.full_name || '',
+        profile?.phone || '',
         currentAmount
       );
 
@@ -151,7 +151,7 @@ export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestPr
             <div>
               <div className="text-sm text-blue-700 font-medium">Available Balance:</div>
               <div className="text-2xl font-bold text-blue-900">
-                KSh {user?.balance.toLocaleString() || '0'}
+                KSh {profile?.balance.toLocaleString() || '0'}
               </div>
             </div>
             <DollarSign className="h-8 w-8 text-blue-600" />
@@ -169,12 +169,12 @@ export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestPr
             onChange={(e) => setAmount(e.target.value)}
             disabled={isSubmitting || !withdrawalHours.allowed}
             min="800"
-            max={user?.balance || 0}
+            max={profile?.balance || 0}
             step="1"
             className="text-base md:text-lg font-semibold"
           />
           <p className="text-xs text-gray-500 mt-1">
-            Minimum: KSh 800 • Maximum: KSh {user?.balance.toLocaleString() || '0'}
+            Minimum: KSh 800 • Maximum: KSh {profile?.balance.toLocaleString() || '0'}
           </p>
         </div>
 
@@ -213,7 +213,7 @@ export const WithdrawalRequest = ({ onWithdrawalSubmitted }: WithdrawalRequestPr
             !withdrawalHours.allowed || 
             !amount || 
             currentAmount < 800 || 
-            (user && currentAmount > user.balance)
+            (profile && currentAmount > profile.balance)
           }
           className="w-full bg-blue-600 hover:bg-blue-700 h-10 md:h-12 text-sm md:text-base font-semibold"
         >

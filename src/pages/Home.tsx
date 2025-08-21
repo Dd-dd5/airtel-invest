@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [liveTransactions, setLiveTransactions] = useState<any[]>([]);
 
   // Mock live transactions
@@ -100,21 +100,21 @@ const Home = () => {
             </div>
           </div>
 
-          {user && (
+          {user && profile && (
             <Card className="mb-6 md:mb-8 bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
               <CardContent className="py-4 md:py-6">
-                <h2 className="text-lg md:text-2xl font-bold mb-2">Welcome back, {user.name}! 🎉</h2>
+                <h2 className="text-lg md:text-2xl font-bold mb-2">Welcome back, {profile.full_name || user.email}! 🎉</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 text-center">
                   <div>
-                    <div className="text-xl md:text-3xl font-bold">KSh {user.balance.toLocaleString()}</div>
+                    <div className="text-xl md:text-3xl font-bold">KSh {profile.balance.toLocaleString()}</div>
                     <div className="text-xs md:text-base text-yellow-100">Current Balance</div>
                   </div>
                   <div>
-                    <div className="text-xl md:text-3xl font-bold">KSh {user.referralEarnings.toLocaleString()}</div>
+                    <div className="text-xl md:text-3xl font-bold">KSh {profile.referral_earnings.toLocaleString()}</div>
                     <div className="text-xs md:text-base text-yellow-100">Referral Earnings</div>
                   </div>
                   <div>
-                    <div className="text-xl md:text-3xl font-bold">{user.totalReferrals}</div>
+                    <div className="text-xl md:text-3xl font-bold">0</div>
                     <div className="text-xs md:text-base text-yellow-100">Total Referrals</div>
                   </div>
                 </div>

@@ -7,7 +7,7 @@ import { useAuth } from "../contexts/AuthContext";
 export const MainNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { logout, user } = useAuth();
+  const { logout, user, profile } = useAuth();
 
   const navItems = [
     { name: "Home", href: "/", icon: Home },
@@ -62,7 +62,7 @@ export const MainNavigation = () => {
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className="text-sm">Welcome, {user?.name}</span>
+              <span className="text-sm">Welcome, {profile?.full_name || user?.email}</span>
               <Button
                 onClick={handleLogout}
                 variant="ghost"
@@ -86,7 +86,7 @@ export const MainNavigation = () => {
             </div>
             
             <div className="flex items-center space-x-2">
-              <span className="text-sm truncate max-w-24">{user?.name}</span>
+              <span className="text-sm truncate max-w-24">{profile?.full_name || user?.email}</span>
               <Button
                 onClick={handleLogout}
                 variant="ghost"

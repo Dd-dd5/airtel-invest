@@ -1,24 +1,30 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { User, Session } from '@supabase/supabase-js';
 
-interface User {
-  phone: string;
-  name: string;
+interface UserProfile {
+  id: string;
+  user_id: string;
+  full_name: string | null;
+  phone: string | null;
   balance: number;
-  referralCode: string;
-  referralEarnings: number;
-  totalReferrals: number;
+  referral_code: string | null;
+  referral_earnings: number;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (phone: string, password: string) => Promise<boolean>;
-  signup: (phone: string, password: string, name: string, referralCode?: string) => Promise<boolean>;
+  profile: UserProfile | null;
+  session: Session | null;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  signup: (email: string, password: string, fullName: string) => Promise<boolean>;
   logout: () => void;
-  resetPassword: (phone: string) => Promise<boolean>;
+  resetPassword: (email: string) => Promise<boolean>;
   updateBalance: (amount: number) => void;
   addReferralEarning: (amount: number) => void;
-  logTransaction: (transactionData: any) => void;
-  isAuthenticated: boolean;
+  logTransaction: (type: string, amount: number, description: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,225 +37,234 @@ export const useAuth = () => {
   return context;
 };
 
-// Generate referral code
-const generateReferralCode = (name: string, phone: string) => {
-  const nameCode = name.substring(0, 3).toUpperCase();
-  const phoneCode = phone.slice(-4);
-  return `${nameCode}${phoneCode}`;
-};
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-// Real user database stored in localStorage
-const getUsers = () => {
-  const stored = localStorage.getItem('solar_users_db');
-  if (stored) {
-    return JSON.parse(stored);
-  }
-  
-  // Initialize empty database
-  const emptyDb: any[] = [];
-  localStorage.setItem('solar_users_db', JSON.stringify(emptyDb));
-  return emptyDb;
-};
-
-const saveUsers = (users: any[]) => {
-  localStorage.setItem('solar_users_db', JSON.stringify(users));
-};
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
+  // Initialize auth state
   useEffect(() => {
-    // Check if user is logged in from localStorage
-    const savedUser = localStorage.getItem('solar_current_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Fetch user profile
+          setTimeout(async () => {
+            await fetchUserProfile(session.user.id);
+          }, 0);
+        } else {
+          setProfile(null);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUserProfile(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (phone: string, password: string): Promise<boolean> => {
-    const users = getUsers();
-    const foundUser = users.find((u: any) => {
-      console.log('Checking user:', u.phone, 'against:', phone);
-      console.log('Password match:', u.password === password);
-      return u.phone === phone && u.password === password;
-    });
-    
-    console.log('Found user:', foundUser);
-    console.log('All users:', users);
-    
-    if (foundUser) {
-      const userData = { 
-        phone: foundUser.phone, 
-        name: foundUser.name, 
-        balance: foundUser.balance,
-        referralCode: foundUser.referralCode,
-        referralEarnings: foundUser.referralEarnings || 0,
-        totalReferrals: foundUser.totalReferrals || 0
-      };
-      setUser(userData);
-      localStorage.setItem('solar_current_user', JSON.stringify(userData));
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+      
+      setProfile(data);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
+
+  const login = async (email: string, password: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      
+      toast.success("Login successful");
       return true;
+    } catch (error) {
+      toast.error("Login failed");
+      return false;
     }
-    return false;
   };
 
-  const signup = async (phone: string, password: string, name: string, referralCode?: string): Promise<boolean> => {
-    const users = getUsers();
-    
-    // Check if user already exists
-    const existingUser = users.find((u: any) => {
-      console.log('Checking existing user:', u.phone, 'against:', phone);
-      return u.phone === phone;
-    });
-    
-    if (existingUser) {
-      console.log('User already exists:', existingUser);
-      return false; // User already exists
-    }
-    
-    // Generate referral code for new user
-    const newReferralCode = generateReferralCode(name, phone);
-    
-    // Create new user
-    const newUser = { 
-      phone, 
-      password, 
-      name, 
-      balance: 0,
-      referralCode: newReferralCode,
-      referralEarnings: 0,
-      totalReferrals: 0
-    };
-    
-    console.log('Creating new user:', newUser);
-    
-    // If referred by someone, add referral bonus to referrer
-    if (referralCode) {
-      const referrer = users.find((u: any) => u.referralCode === referralCode);
-      if (referrer) {
-        referrer.referralEarnings = (referrer.referralEarnings || 0) + 200;
-        referrer.totalReferrals = (referrer.totalReferrals || 0) + 1;
-        referrer.balance += 200;
-      }
-    }
-    
-    users.push(newUser);
-    saveUsers(users);
-    
-    console.log('Users after signup:', users);
-    
-    const userData = { 
-      phone, 
-      name, 
-      balance: 0,
-      referralCode: newReferralCode,
-      referralEarnings: 0,
-      totalReferrals: 0
-    };
-    setUser(userData);
-    localStorage.setItem('solar_current_user', JSON.stringify(userData));
-    return true;
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('solar_current_user');
-  };
-
-  const resetPassword = async (phone: string): Promise<boolean> => {
-    const users = getUsers();
-    const foundUser = users.find((u: any) => u.phone === phone);
-    return !!foundUser;
-  };
-
-  const updateBalance = (amount: number) => {
-    if (user) {
-      const users = getUsers();
-      const userIndex = users.findIndex((u: any) => u.phone === user.phone);
+  const signup = async (email: string, password: string, fullName: string): Promise<boolean> => {
+    try {
+      const redirectUrl = `${window.location.origin}/`;
       
-      if (userIndex !== -1) {
-        users[userIndex].balance += amount;
-        users[userIndex].lastActivity = new Date().toISOString();
-        saveUsers(users);
-        
-        const updatedUser = { ...user, balance: user.balance + amount };
-        setUser(updatedUser);
-        localStorage.setItem('solar_current_user', JSON.stringify(updatedUser));
-        
-        // Log transaction for admin tracking
-        logTransaction({
-          userId: user.phone,
-          userName: user.name,
-          userPhone: user.phone,
-          type: amount > 0 ? 'deposit' : 'withdrawal',
-          amount: Math.abs(amount),
-          status: 'completed',
-          details: { method: amount > 0 ? 'M-Pesa Deposit' : 'M-Pesa Withdrawal' }
-        });
-      }
-    }
-  };
-
-  const addReferralEarning = (amount: number) => {
-    if (user) {
-      const users = getUsers();
-      const userIndex = users.findIndex((u: any) => u.phone === user.phone);
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: fullName,
+          }
+        }
+      });
       
-      if (userIndex !== -1) {
-        users[userIndex].referralEarnings += amount;
-        users[userIndex].totalReferrals += 1;
-        users[userIndex].balance += amount;
-        users[userIndex].lastActivity = new Date().toISOString();
-        saveUsers(users);
-        
-        const updatedUser = { 
-          ...user, 
-          referralEarnings: user.referralEarnings + amount,
-          totalReferrals: user.totalReferrals + 1,
-          balance: user.balance + amount
-        };
-        setUser(updatedUser);
-        localStorage.setItem('solar_current_user', JSON.stringify(updatedUser));
-        
-        // Log referral transaction for admin tracking
-        logTransaction({
-          userId: user.phone,
-          userName: user.name,
-          userPhone: user.phone,
-          type: 'referral_earning',
-          amount: amount,
-          status: 'completed',
-          details: { referrals: updatedUser.totalReferrals }
-        });
+      if (error) {
+        toast.error(error.message);
+        return false;
       }
+      
+      toast.success("Account created! Please check your email to confirm your account.");
+      return true;
+    } catch (error) {
+      toast.error("Signup failed");
+      return false;
     }
   };
 
-  const logTransaction = (transactionData: any) => {
-    const existingTransactions = JSON.parse(localStorage.getItem('solar_admin_transactions') || '[]');
-    const newTransaction = {
-      id: `${transactionData.type}_${transactionData.userId}_${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      ...transactionData
-    };
-    
-    existingTransactions.push(newTransaction);
-    localStorage.setItem('solar_admin_transactions', JSON.stringify(existingTransactions));
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Logout error:', error);
+      }
+      
+      setUser(null);
+      setProfile(null);
+      setSession(null);
+      toast.success("Logged out successfully");
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.success("Logged out successfully");
+    }
   };
 
-  // Export updateBalance function for use in components
-  const updateBalanceFunction = updateBalance;
+  const resetPassword = async (email: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      
+      toast.success("Password reset instructions sent to your email");
+      return true;
+    } catch (error) {
+      toast.error("Password reset failed");
+      return false;
+    }
+  };
 
-  const value = {
+  const updateBalance = async (amount: number) => {
+    if (!user || !profile) return;
+    
+    try {
+      const newBalance = profile.balance + amount;
+      
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ balance: newBalance })
+        .eq('user_id', user.id);
+      
+      if (updateError) {
+        toast.error("Failed to update balance");
+        return;
+      }
+      
+      // Log transaction
+      await logTransaction("balance_update", amount, `Balance ${amount > 0 ? 'increased' : 'decreased'} by KSh ${Math.abs(amount)}`);
+      
+      // Update local state
+      setProfile({ ...profile, balance: newBalance });
+    } catch (error) {
+      toast.error("Failed to update balance");
+    }
+  };
+
+  const addReferralEarning = async (amount: number) => {
+    if (!user || !profile) return;
+    
+    try {
+      const newEarnings = profile.referral_earnings + amount;
+      
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ referral_earnings: newEarnings })
+        .eq('user_id', user.id);
+      
+      if (updateError) {
+        toast.error("Failed to update referral earnings");
+        return;
+      }
+      
+      // Log transaction
+      await logTransaction("referral_earning", amount, `Referral earning of KSh ${amount}`);
+      
+      // Update local state
+      setProfile({ ...profile, referral_earnings: newEarnings });
+    } catch (error) {
+      toast.error("Failed to update referral earnings");
+    }
+  };
+
+  const logTransaction = async (type: string, amount: number, description: string) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .insert({
+          user_id: user.id,
+          type,
+          amount,
+          description,
+        });
+      
+      if (error) {
+        console.error('Failed to log transaction:', error);
+      }
+    } catch (error) {
+      console.error('Failed to log transaction:', error);
+    }
+  };
+
+  const value: AuthContextType = {
     user,
+    profile,
+    session,
+    isAuthenticated: !!user,
     login,
     signup,
     logout,
     resetPassword,
-    updateBalance: updateBalanceFunction,
+    updateBalance,
     addReferralEarning,
     logTransaction,
-    isAuthenticated: !!user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

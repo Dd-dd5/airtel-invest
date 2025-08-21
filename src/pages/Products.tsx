@@ -13,7 +13,7 @@ import solarMicroImg from "@/assets/solar-micro.jpg";
 import solarStandardImg from "@/assets/solar-standard.jpg";
 
 export default function Products() {
-  const { user, updateBalance } = useAuth();
+  const { user, profile, updateBalance } = useAuth();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isInvestmentDialogOpen, setIsInvestmentDialogOpen] = useState(false);
 
@@ -163,7 +163,7 @@ export default function Products() {
 
     // Check if user has sufficient balance
     const price = parseInt(selectedProduct.price.replace('KSh ', '').replace(',', ''));
-    if (user.balance < price) {
+    if (profile && profile.balance < price) {
       toast({
         title: "Insufficient Balance",
         description: `You need KSh ${price.toLocaleString()} to invest in ${selectedProduct.name}. Please top up your account.`,

@@ -12,11 +12,11 @@ import { ManualPayment } from "@/components/ManualPayment";
 import { WithdrawalRequest } from "@/components/WithdrawalRequest";
 
 const Accounts = () => {
-  const { user, updateBalance } = useAuth();
+  const { user, profile, updateBalance } = useAuth();
   const [showManualPayment, setShowManualPayment] = useState(false);
   const [showWithdrawalRequest, setShowWithdrawalRequest] = useState(false);
 
-  const referralLink = `https://solarinvest.com/signup?ref=${user?.referralCode}`;
+  const referralLink = `https://solarinvest.com/signup?ref=${profile?.referral_code}`;
 
   const copyReferralLink = () => {
     navigator.clipboard.writeText(referralLink);

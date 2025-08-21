@@ -56,7 +56,7 @@ export const ManualPayment = ({ onPaymentSubmitted }: ManualPaymentProps) => {
     try {
       const result = paymentService.submitDepositRequest(
         user?.phone || '',
-        user?.name || '',
+        profile?.full_name || '',
         user?.phone || '',
         parseFloat(amount),
         paymentMethod,
