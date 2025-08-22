@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Sun, Leaf, Zap } from "lucide-react";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -24,14 +24,14 @@ const Login = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!phone || !password) {
       toast.error("Please fill in all fields");
       return;
     }
 
     setIsLoading(true);
     try {
-      const success = await login(email, password);
+      const success = await login(phone, password);
       if (success) {
         // Redirect will be handled by the auth state change
         window.location.href = '/';
@@ -45,7 +45,7 @@ const Login = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password || !fullName) {
+    if (!phone || !password || !fullName) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -57,10 +57,10 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      const success = await signup(email, password, fullName);
+      const success = await signup(phone, password, fullName);
       if (success) {
         // Clear the form
-        setEmail('');
+        setPhone('');
         setPassword('');
         setFullName('');
       }
@@ -73,17 +73,17 @@ const Login = () => {
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email address");
+    if (!phone) {
+      toast.error("Please enter your phone number");
       return;
     }
 
     setIsLoading(true);
     try {
-      const success = await resetPassword(email);
+      const success = await resetPassword(phone);
       if (success) {
         setShowForgotPassword(false);
-        setEmail('');
+        setPhone('');
       }
     } catch (error) {
       toast.error("Password reset failed. Please try again.");
@@ -121,7 +121,7 @@ const Login = () => {
             </CardTitle>
             <CardDescription className="text-sm">
               {showForgotPassword 
-                ? "Enter your email address to reset your password" 
+                ? "Enter your phone number to reset your password" 
                 : "Login or create your solar investment account"
               }
             </CardDescription>
@@ -137,13 +137,13 @@ const Login = () => {
                 <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div>
-                      <Label htmlFor="email" className="text-sm">Email Address</Label>
+                      <Label htmlFor="phone" className="text-sm">Phone Number</Label>
                       <Input
-                        id="email"
-                        type="email"
-                        placeholder="your@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        id="phone"
+                        type="tel"
+                        placeholder="e.g., 0712345678"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                         required
                         className="mt-1 h-12 text-base"
                       />
@@ -198,13 +198,13 @@ const Login = () => {
                     </div>
                     
                     <div>
-                      <Label htmlFor="signup-email" className="text-sm">Email Address</Label>
+                      <Label htmlFor="signup-phone" className="text-sm">Phone Number</Label>
                       <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="your@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        id="signup-phone"
+                        type="tel"
+                        placeholder="e.g., 0712345678"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                         required
                         className="mt-1 h-12 text-base"
                       />
@@ -236,13 +236,13 @@ const Login = () => {
             ) : (
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div>
-                  <Label htmlFor="forgot-email" className="text-sm">Email Address</Label>
+                  <Label htmlFor="forgot-phone" className="text-sm">Phone Number</Label>
                   <Input
-                    id="forgot-email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="forgot-phone"
+                    type="tel"
+                    placeholder="e.g., 0712345678"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     required
                     className="mt-1 h-12 text-base"
                   />

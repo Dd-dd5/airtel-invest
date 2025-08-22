@@ -18,10 +18,10 @@ interface AuthContextType {
   profile: UserProfile | null;
   session: Session | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (email: string, password: string, fullName: string) => Promise<boolean>;
+  login: (phone: string, password: string) => Promise<boolean>;
+  signup: (phone: string, password: string, fullName: string) => Promise<boolean>;
   logout: () => void;
-  resetPassword: (email: string) => Promise<boolean>;
+  resetPassword: (phone: string) => Promise<boolean>;
   updateBalance: (amount: number) => void;
   addReferralEarning: (amount: number) => void;
   logTransaction: (type: string, amount: number, description: string) => void;
@@ -96,8 +96,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (phone: string, password: string): Promise<boolean> => {
     try {
+      // Convert phone number to email format for Supabase auth
+      const email = `${phone.replace(/\D/g, '')}@solar.invest`;
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -116,17 +119,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signup = async (email: string, password: string, fullName: string): Promise<boolean> => {
+  const signup = async (phone: string, password: string, fullName: string): Promise<boolean> => {
     try {
+      // Convert phone number to email format for Supabase auth
+      const email = `${phone.replace(/\D/g, '')}@solar.invest`;
       const redirectUrl = `${window.location.origin}/`;
       
       const { error } = await supabase.auth.signUp({
         email,
+        phone,
         password,
         options: {
           emailRedirectTo: redirectUrl,
           data: {
             full_name: fullName,
+            phone: phone,
           }
         }
       });
@@ -136,7 +143,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return false;
       }
       
-      toast.success("Account created! Please check your email to confirm your account.");
+      toast.success("Account created successfully! You can now log in.");
       return true;
     } catch (error) {
       toast.error("Signup failed");
@@ -161,8 +168,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const resetPassword = async (email: string): Promise<boolean> => {
+  const resetPassword = async (phone: string): Promise<boolean> => {
     try {
+      // Convert phone number to email format for Supabase auth
+      const email = `${phone.replace(/\D/g, '')}@solar.invest`;
+      
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
@@ -172,7 +182,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return false;
       }
       
-      toast.success("Password reset instructions sent to your email");
+      toast.success("Password reset instructions sent to your registered contact");
       return true;
     } catch (error) {
       toast.error("Password reset failed");
