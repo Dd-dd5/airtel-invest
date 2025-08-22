@@ -148,19 +148,7 @@ const Admin = () => {
       }
       
       // Log transaction
-      logTransaction({
-        userId: payment.userId,
-        userName: payment.userName,
-        userPhone: payment.userPhone,
-        type: 'deposit',
-        amount: payment.amount,
-        status: 'completed',
-        details: { 
-          method: payment.paymentMethod,
-          transactionCode: payment.transactionCode,
-          adminNotes: adminNotes
-        }
-      });
+      logTransaction('deposit', payment.amount, `Deposit from ${payment.paymentMethod} - ${payment.transactionCode}`);
       
       toast({
         title: "✅ Payment Verified",
@@ -193,19 +181,7 @@ const Admin = () => {
     
     if (success) {
       // Log transaction
-      logTransaction({
-        userId: withdrawal.userId,
-        userName: withdrawal.userName,
-        userPhone: withdrawal.userPhone,
-        type: 'withdrawal',
-        amount: withdrawal.amount,
-        status: 'completed',
-        details: { 
-          netAmount: withdrawal.netAmount,
-          transferFee: withdrawal.transferFee,
-          adminNotes: adminNotes
-        }
-      });
+      logTransaction('withdrawal', withdrawal.amount, `Withdrawal processed - Net: KSh ${withdrawal.netAmount}`);
       
       toast({
         title: "✅ Withdrawal Processed",

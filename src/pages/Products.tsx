@@ -335,7 +335,7 @@ export default function Products() {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Your Balance:</span>
-                    <span className="font-bold">KSh {user?.balance.toLocaleString()}</span>
+                    <span className="font-bold">KSh {profile?.balance?.toLocaleString() || '0'}</span>
                   </div>
                 </div>
                 <div className="flex gap-3">

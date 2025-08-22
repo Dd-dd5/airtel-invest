@@ -54,7 +54,7 @@ const Accounts = () => {
             <Card className="bg-gradient-to-r from-green-400 to-green-600 text-white">
               <CardContent className="p-6 text-center">
                 <Wallet className="h-8 w-8 mx-auto mb-2" />
-                <div className="text-2xl font-bold">KSh {user.balance.toLocaleString()}</div>
+                <div className="text-2xl font-bold">KSh {profile?.balance?.toLocaleString() || '0'}</div>
                 <div className="text-green-100">Current Balance</div>
               </CardContent>
             </Card>
@@ -62,7 +62,7 @@ const Accounts = () => {
             <Card className="bg-gradient-to-r from-blue-400 to-blue-600 text-white">
               <CardContent className="p-6 text-center">
                 <Gift className="h-8 w-8 mx-auto mb-2" />
-                <div className="text-2xl font-bold">KSh {user.referralEarnings.toLocaleString()}</div>
+                <div className="text-2xl font-bold">KSh {profile?.referral_earnings?.toLocaleString() || '0'}</div>
                 <div className="text-blue-100">Referral Earnings</div>
               </CardContent>
             </Card>
@@ -70,7 +70,7 @@ const Accounts = () => {
             <Card className="bg-gradient-to-r from-purple-400 to-purple-600 text-white">
               <CardContent className="p-6 text-center">
                 <Users className="h-8 w-8 mx-auto mb-2" />
-                <div className="text-2xl font-bold">{user.totalReferrals}</div>
+                <div className="text-2xl font-bold">{0}</div>
                 <div className="text-purple-100">Total Referrals</div>
               </CardContent>
             </Card>
@@ -208,11 +208,11 @@ const Accounts = () => {
                   <div className="text-purple-100">Per Referral</div>
                 </div>
                 <div className="bg-white/10 p-4 rounded-lg">
-                  <div className="text-3xl font-bold">{user?.totalReferrals || 0}</div>
+                  <div className="text-3xl font-bold">{0}</div>
                   <div className="text-purple-100">Your Referrals</div>
                 </div>
                 <div className="bg-white/10 p-4 rounded-lg">
-                  <div className="text-3xl font-bold">KSh {user?.referralEarnings.toLocaleString() || 0}</div>
+                  <div className="text-3xl font-bold">KSh {profile?.referral_earnings?.toLocaleString() || '0'}</div>
                   <div className="text-purple-100">Total Earned</div>
                 </div>
               </div>
@@ -221,7 +221,7 @@ const Accounts = () => {
                 <Label className="text-white mb-2 block">Your Referral Code:</Label>
                 <div className="flex gap-2">
                   <Input
-                    value={user?.referralCode || ''}
+                    value={profile?.referral_code || ''}
                     readOnly
                     className="bg-white/10 border-white/20 text-white placeholder-white/50"
                   />
@@ -289,7 +289,7 @@ const Accounts = () => {
                 <Input 
                   id="full-name" 
                   type="text" 
-                  value={user?.name || ''} 
+                  value={profile?.full_name || ''} 
                   disabled 
                   className="bg-gray-50"
                 />
@@ -299,7 +299,7 @@ const Accounts = () => {
                 <Input 
                   id="referral-code-display" 
                   type="text" 
-                  value={user?.referralCode || ''} 
+                  value={profile?.referral_code || ''} 
                   disabled 
                   className="bg-gray-50"
                 />

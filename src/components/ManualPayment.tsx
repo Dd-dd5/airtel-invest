@@ -15,7 +15,7 @@ interface ManualPaymentProps {
 }
 
 export const ManualPayment = ({ onPaymentSubmitted }: ManualPaymentProps) => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<'mpesa' | 'airtel'>('mpesa');
   const [transactionCode, setTransactionCode] = useState("");
